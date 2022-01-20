@@ -261,7 +261,12 @@ function menuList(){
             children:[
                 {
                     label:"中间变量",
-                    content:"Var"
+                    content:"Var",
+                    args:{
+                        geometry:[],
+                        operation:[]
+                    },
+                    customArgs:[],
                 }
             ]
         }

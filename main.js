@@ -1,13 +1,19 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow,Menu } = require('electron')
 const path = require("path")
 function createWindow () {
     const win = new BrowserWindow({
-      width: 800,
-      height: 600
+        width: 1960,
+        height: 1080
     })
-  
+    Menu.setApplicationMenu(null)
     win.loadFile(path.join(__dirname,"index.html"))
 }
+
+
+require('electron-reload')(__dirname, {
+    electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
+    hardResetMethod: 'exit'
+});
 
 
 app.whenReady().then(() => {

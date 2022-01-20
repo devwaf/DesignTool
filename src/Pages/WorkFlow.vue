@@ -31,6 +31,7 @@
 <script>
 import { Canvas } from "butterfly-dag";
 import Node from "./components/Node";
+import Endpoint from './components/Endpoint'
 import Menus from "./components/Menu";
 import $ from "jquery";
 import { getUUId } from "@/utils/utils";
@@ -129,8 +130,8 @@ export default {
     },
     // 添加工作流节点 dom信息
     addWorkNode(liP){
-      let pMenu = this.menus[this.activeIndex.pIndex]
-      let menu = pMenu.children[this.activeIndex.cIndex];
+      let pMenu = JSON.parse(JSON.stringify(this.menus[this.activeIndex.pIndex]))
+      let menu =JSON.parse(JSON.stringify(pMenu.children[this.activeIndex.cIndex]));
       let content = []
       let k,id = "node_" + getUUId(),endpoints=[]
       for(k in menu.args){
@@ -158,6 +159,7 @@ export default {
             orientation: [-1, 0],
             type:"target",
             limitNum:2,
+            Class:Endpoint
           })
         }
         endpoints.push({
@@ -165,6 +167,7 @@ export default {
           orientation: [1, 0],
           type:"source",
           limitNum:1,
+          Class:Endpoint
         })
       }else if(pMenu.type === "Var"){
         // 中间变量
@@ -173,20 +176,22 @@ export default {
           orientation: [-1, 0],
           type:"target",
           limitNum:2,
+          Class:Endpoint
         })
         endpoints.push({
           id: "endpoint" + getUUId(),
           orientation: [1, 0],
           type:"source",
           limitNum:1,
+          Class:Endpoint
         })
       }
-
+      console.log(liP.top,liP.left);
       this.nodeList.push({
           // 数据id及节点id保存一致
           id,
           top: liP.top,
-          left: liP.left,
+          left: liP.left - 200,  // 减去左侧菜单200的偏移量
           label: menu.label,
           content: content,
           // args:menu.args,
@@ -247,6 +252,32 @@ export default {
         return
       }
 
+
+      console.log(sourceNode.options.data.type,targetNode.options.data.type);
+      // 中间变量操作
+      if(targetNode.options.data.type == "Var"){
+        let node = this.nodeList.find(n=>n.data.id == sourceNode.id)
+        let index = this.nodeList.findIndex(n=>n.data.id == targetNode.id)
+        let args = this.nodeList[index].data.args
+        console.log(args);
+        console.log(node);
+        if(sourceNode.options.data.type == "Operation"){
+          args.geometry = args.geometry.concat(node.data.args.source)
+          args.operation.push(sourceNode.id)
+
+        }else if(sourceNode.options.data.type == "Geometry"){
+          args.geometry.push(node.data.id)
+
+        }else if(sourceNode.options.data.type == "Var"){
+          args.geometry = args.geometry.concat(node.data.args.geometry)
+          args.operation = args.operation.concat(sourceNode.options.data.operation)
+
+        }
+
+      }
+
+
+      // 运算符操作
       let flag = null,prop
       if(sourceNode.options.data.type == "Operation"){
         flag = "source"
@@ -276,7 +307,17 @@ export default {
       // this.redrawCanvas()
     },
     linkDisconnect(data){
-      console.log(data);
+      let {sourceNode,targetNode} = data
+      if(targetNode.options.data.type === "Operation"){
+        let index = this.nodeList.findIndex(node=> node.id == targetNode.id)
+        console.log(this.nodeList[index]);
+        this.nodeList[index].data.args.source = this.nodeList[index].data.args.source.filter(s=>s!=sourceNode.id) 
+
+      }else if(sourceNode.options.data.type === "Operation"){
+        let index = this.nodeList.findIndex(node=> node.id == sourceNode.id)
+        console.log(this.nodeList[index]);
+        this.nodeList[index].data.args.target = null
+      }
     },
     // 属性面板
     optionsSubmit(data){
@@ -362,7 +403,7 @@ export default {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.8);
       }
       .node-label {
-        padding: 5px 10px;
+        padding: 10px 10px;
         margin: 0;
         color: #fff;
         font-weight: 500;
@@ -384,8 +425,19 @@ export default {
 }
 // 锚点颜色
 .butterflie-circle-endpoint{
+  width: 8px;
+  height: 8px;
   background-color: #3db37c;
   border-color: #3db37c;
+  cursor: move;
+  &.endpoint_source{
+    background-color: #E6A23C;
+    border-color: #E6A23C;
+  }
+  &.endpoint_target{
+    background-color: #409EFF;
+    border-color: #409EFF;
+  }
 }
 .butterflies-link{
   stroke:#3db37c;
