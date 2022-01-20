@@ -64,6 +64,7 @@ function menuList(){
                     args:{
                         degree:0
                     },
+                    customArgs:[],
                     color:'rgba(255, 255, 255, 0.8)',
                     translate:{
                         x:0,
@@ -89,6 +90,7 @@ function menuList(){
                         p2:{x:0,y:0,z:0},
                         p3:{x:0,y:0,z:0}
                     },
+                    customArgs:[],
                     color:'rgba(19, 206, 102, 0.8)',
                     translate:{
                         x:0,
@@ -108,8 +110,9 @@ function menuList(){
                 },
                 {
                     label:"cube",
-                    type:"Cube",
+                    content:"Cube",
                     args:{},
+                    customArgs:[],
                     color:'rgba(255, 255, 255, 0.8)',
                     translate:{
                         x:0,
@@ -134,6 +137,7 @@ function menuList(){
                         p1:{x:0,y:0,z:0},
                         p2:{x:0,y:0,z:0}
                     },
+                    customArgs:[],
                     color:'rgba(255, 255, 255, 0.8)',
                     translate:{
                         x:0,
@@ -159,6 +163,7 @@ function menuList(){
                         p2:{x:0,y:0,z:0},
                         p3:{x:0,y:0,z:0}
                     },
+                    customArgs:[],
                     color:'rgba(255, 255, 255, 0.8)',
                     translate:{
                         x:0,
@@ -180,6 +185,7 @@ function menuList(){
                     label:"section",
                     content:"Section",
                     args:{},
+                    customArgs:[],
                     color:'rgba(255, 255, 255, 0.8)',
                     translate:{
                         x:0,
@@ -207,40 +213,45 @@ function menuList(){
                     label:"并集",
                     content:"Union",
                     args:{
-                        source:null,
+                        source:[],
                         target:null
-                    }
+                    },
+                    customArgs:[],
                 },
                 {
                     label:"交集",
                     content:"Intersect",
                     args:{
-                        source:null,
+                        source:[],
                         target:null
-                    }
+                    },
+                    customArgs:[],
                 },
                 {
                     label:"差集",
                     content:"Difference",
                     args:{
-                        source:null,
+                        source:[],
                         target:null
-                    }
+                    },
+                    customArgs:[],
                 },
                 {
                     label:"组合",
                     content:"Combine",
                     args:{
-                        source:null,
+                        source:[],
                         target:null
-                    }
+                    },
+                    customArgs:[],
                 },
                 {
                     label:"放置",
                     content:"Place",
                     args:{
-                        target:null
-                    }
+                        target:[]
+                    },
+                    customArgs:[],
                 }
             ]
         },

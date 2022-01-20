@@ -6,7 +6,7 @@
       <div class="operation-btns" v-show="isExpand">
           <el-button size="small" @click.stop="copyJson"> 复 制 </el-button>
           <el-button size="small" @click.stop="exportJson"> 导 出Json </el-button>
-          <el-button size="small" @click.stop="openRequest"> 请 求 </el-button>
+          <!-- <el-button size="small" @click.stop="openRequest"> 请 求 </el-button> -->
       </div>
       <i class="icon" :class="isExpand ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" @click.stop="expandContainer"></i>
       <el-dialog
@@ -85,10 +85,8 @@ export default {
                 Var:[]
             }
             this.importData.forEach(d => {
-                console.log(d.data.type);
                 json[d.data.type].push(d.data)
             });
-            console.log(json);
             this.jsonData = {
                 Geomerty:json.Geometry,
                 Operator:json.Operation,

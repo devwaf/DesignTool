@@ -17,7 +17,7 @@ class CustomNode extends Node {
         .css('width', data.options.width)
         .css('height', data.options.height)
         .attr('id', data.id);
-        console.log(data,"node");
+        // console.log(data,"node");
         // 标题
         if(data.options.label){
             let nodeLabel = $(`<h4 class='node-label'>${data.options.label}</h4>`)

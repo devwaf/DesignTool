@@ -157,9 +157,23 @@ export default {
             id: "endpoint" + getUUId(),
             orientation: [-1, 0],
             type:"target",
-            limitNum:1,
+            limitNum:2,
           })
         }
+        endpoints.push({
+          id: "endpoint" + getUUId(),
+          orientation: [1, 0],
+          type:"source",
+          limitNum:1,
+        })
+      }else if(pMenu.type === "Var"){
+        // 中间变量
+        endpoints.push({
+          id: "endpoint" + getUUId(),
+          orientation: [-1, 0],
+          type:"target",
+          limitNum:2,
+        })
         endpoints.push({
           id: "endpoint" + getUUId(),
           orientation: [1, 0],
@@ -192,7 +206,7 @@ export default {
       JL.css("top", evt.y);
     },
     canvasMarkEvent(){
-      let events = ["system.node.click","system.link.connect","system.links.delete"]
+      let events = ["system.node.click","system.link.connect","system.links.delete","system.endpoint.limit"]
       events.forEach(event=>{
         this.canvas.on(event,(data)=>{
           switch(event){
@@ -203,7 +217,8 @@ export default {
               // console.log(data);
               this.linkConnect(data.links[0])
               break;
-            case "system.link.delete":
+            case "system.links.delete":
+              // console.log(data);
               this.linkDisconnect(data.links[0])
               break;
           }
@@ -214,7 +229,7 @@ export default {
     },
     // 点击节点
     nodeClick(data){
-      console.log(this.nodeList);
+      // console.log(this.nodeList);
       let node =this.nodeList.find(node=>node.id==data.node.id)
       // console.log(node.data);
       this.activeNode = node.data
@@ -227,8 +242,11 @@ export default {
       if(sourceNode.options.data.type === targetNode.options.data.type && targetNode.options.data.type  === "Operation"){
         this.canvas.removeEdge(data.id)
         return
+      }else if(sourceNode.options.data.type === "Geometry" &&  targetNode.options.data.type === "Var"){
+        this.canvas.removeEdge(data.id)
+        return
       }
-      console.log(sourceNode,targetNode,data);
+
       let flag = null,prop
       if(sourceNode.options.data.type == "Operation"){
         flag = "source"
@@ -241,7 +259,12 @@ export default {
       // 非运算组件不进行下列操作
       if(!flag) return 
       let index = this.nodeList.findIndex(node => node.id == data[flag+"Node"].id)
-      this.nodeList[index].data.args[prop] = data[prop+"Node"].id
+      // source 输入为 多进 输出为唯一
+      if(Array.isArray(this.nodeList[index].data.args[prop])){
+         this.nodeList[index].data.args[prop].push(data[prop+"Node"].id)
+      }else{
+        this.nodeList[index].data.args[prop] = data[prop+"Node"].id
+      }
       // 保存连接线
       this.edgeList.push({
         source: sourceEndpoint.id,
@@ -252,7 +275,9 @@ export default {
       })
       // this.redrawCanvas()
     },
-    linkDisconnect(){},
+    linkDisconnect(data){
+      console.log(data);
+    },
     // 属性面板
     optionsSubmit(data){
 

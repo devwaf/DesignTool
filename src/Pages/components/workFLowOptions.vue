@@ -128,11 +128,11 @@ export default {
     methods: {
         getAgrs(){
             let args = this.options.args
-            console.log(args);
+            // console.log(args);
             let k
             let arr = []
             for(k in args){
-                console.log(k,"----",args[k]);
+                // console.log(k,"----",args[k]);
                 arr.push({label:k,value:args[k]})
             }
             this.args = arr
@@ -144,7 +144,7 @@ export default {
         },
         // 确定提交
         submit(){
-            console.log(this.options);
+            // console.log(this.options);
             this.$emit('submit',this.options)
         },
         editOptionsLable(){
