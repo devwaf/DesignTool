@@ -10,9 +10,19 @@ npm install
 npm run serve
 ```
 
+### 运行桌面程序
+```
+electron:serve
+```
+
 ### Compiles and minifies for production
 ```
 npm run build
+```
+
+### 运行桌面程序打包  node 12.x 请修改 node_modules require("fs/promiss") 替换为 require("fs").promiss
+```
+electron:serve
 ```
 
 ### Lints and fixes files
