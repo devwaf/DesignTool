@@ -133,7 +133,7 @@ export default {
       let pMenu = JSON.parse(JSON.stringify(this.menus[this.activeIndex.pIndex]))
       let menu =JSON.parse(JSON.stringify(pMenu.children[this.activeIndex.cIndex]));
       let content = []
-      let k,id = "node_" + getUUId(),endpoints=[]
+      let k,id = getUUId(),endpoints=[]
       for(k in menu.args){
         content.push(`${k}:${menu.args[k]}`)
       }
@@ -141,12 +141,12 @@ export default {
       // 判断
       if(pMenu.type === "Geometry"){
           endpoints.push({
-            id: "endpoint" + getUUId(),
+            id: getUUId(),
             orientation: [-1, 0],
             // type:"target"
           })
           endpoints.push({
-            id: "endpoint" + getUUId(),
+            id: getUUId(),
             orientation: [1, 0],
             // type:"source"
           })
@@ -155,7 +155,7 @@ export default {
         // 特殊 运算符 放置只有一个target
         if(menu.content !== "Place"){
           endpoints.push({
-            id: "endpoint" + getUUId(),
+            id: getUUId(),
             orientation: [-1, 0],
             type:"target",
             limitNum:2,
@@ -163,7 +163,7 @@ export default {
           })
         }
         endpoints.push({
-          id: "endpoint" + getUUId(),
+          id: getUUId(),
           orientation: [1, 0],
           type:"source",
           limitNum:1,
@@ -172,14 +172,14 @@ export default {
       }else if(pMenu.type === "Var"){
         // 中间变量
         endpoints.push({
-          id: "endpoint" + getUUId(),
+          id: getUUId(),
           orientation: [-1, 0],
           type:"target",
           limitNum:2,
           Class:Endpoint
         })
         endpoints.push({
-          id: "endpoint" + getUUId(),
+          id: getUUId(),
           orientation: [1, 0],
           type:"source",
           limitNum:1,
@@ -388,39 +388,6 @@ export default {
     position: relative;
     width: calc(100% - 500px);
     background-color: #aaa;
-    .work-flow-node {
-      width: 150px;
-      text-align: center;
-      background: #fff;
-      vertical-align: middle;
-      border-radius: 5px;
-      position: absolute;
-      background: #3c3a3a;
-      text-align: center;
-      color: #bfbfbf;
-      &.active {
-        border: 2px solid #ff8637;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.8);
-      }
-      .node-label {
-        padding: 10px 10px;
-        margin: 0;
-        color: #fff;
-        font-weight: 500;
-        font-size: 14px;
-      }
-      .node-content {
-        padding: 10px 15px;
-        border-top: 1px solid #f9f9f9;
-        .node-content-item {
-          margin-bottom: 5px;
-          color: #bfbfbf;
-          &:last-child {
-            margin-bottom: 0;
-          }
-        }
-      }
-    }
   }
 }
 // 锚点颜色
@@ -443,6 +410,50 @@ export default {
   stroke:#3db37c;
   &:hover{
     stroke:#6dd4a4;
+  }
+}
+// 节点
+.work-flow-node {
+  width: 150px;
+  text-align: center;
+  background: #fff;
+  vertical-align: middle;
+  border-radius: 5px;
+  position: absolute;
+  background: #3c3a3a;
+  text-align: center;
+  color: #bfbfbf;
+  cursor: pointer;
+  &.active {
+    border: 2px solid #ff8637;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.8);
+  }
+  &.node_Geometry{
+    background-color: #173474;
+  }
+  &.node_Operation{
+    background-color: #255e43;
+  }
+  &.node_Var{
+    background-color: #97731f;
+  }
+  .node-label {
+    padding: 10px 10px;
+    margin: 0;
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .node-content {
+    padding: 10px 15px;
+    border-top: 1px solid #f9f9f9;
+    .node-content-item {
+      margin-bottom: 5px;
+      color: #bfbfbf;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 </style>
