@@ -241,7 +241,7 @@ export default {
 			this.options.customArgs[index].attributeitem.splice(ind, 1)
 			this.$forceUpdate()
 		},
-		// 添加额外属性
+		// 添加额外属性1
 		addCustompropertiescontent(item, index) {
 				this.options.customArgs[index].attributeitem.push('')
 				this.$forceUpdate()
