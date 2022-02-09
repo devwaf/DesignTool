@@ -111,7 +111,7 @@
 			</template>
 			<!-- 中间变量 -->
 			<template v-else-if="options.type === 'Var'">
-				<el-collapse v-model="attribute" accordion class="elcollapse">
+				<!-- <el-collapse v-model="attribute" accordion class="elcollapse">
 					<el-collapse-item title="属性" name="1">
 						<div class="option-block" :key="index" v-for="(arg, index) in args">
 							<span class="option-title">{{ arg.label }}</span>
@@ -141,7 +141,7 @@
 						</div>
 						<el-button type="primary" size="small" @click="addCustomproperties">添加</el-button>
 					</el-collapse-item>
-				</el-collapse>
+				</el-collapse> -->
 			</template>
 		</div>
 		<div class="c-footer">
@@ -169,11 +169,12 @@ export default {
 			isEditLabel: false, // 控制修改属性label
 			attribute: '1',
 			customproperties: '1',
-			newattributeitem: ''
+			newattributeitem: '',
 		}
 	},
 	watch: {
 		data(nv) {
+			console.log(nv);
 			this.isFlag = false
 			this.isChange = false
 			this.options = nv
@@ -209,6 +210,8 @@ export default {
 		addCustomproperties() {
 			//添加自定义属性输入框
 			this.options.customArgs.push({})
+			this.options.customArgs[this.options.customArgs.length-1].attributeitem = []
+			this.addCustompropertiescontent('item',this.options.customArgs.length-1)
 		},
 		// 右键删除自定义属性
 		rightClick(item, index) {
@@ -233,21 +236,15 @@ export default {
 				this.options.customArgs[index].attributeitem = []
 			}
 		},
+		// 删除属性
 		deleteCustomproperties(index, ind) {
 			this.options.customArgs[index].attributeitem.splice(ind, 1)
 			this.$forceUpdate()
 		},
+		// 添加额外属性
 		addCustompropertiescontent(item, index) {
-			if (!this.options.customArgs[index].attributename) {
-				this.$message({
-					message: '请先输入自定义属性名称',
-					type: 'warning'
-				})
-			} else {
-				// 添加属性内容
 				this.options.customArgs[index].attributeitem.push('')
 				this.$forceUpdate()
-			}
 		},
 		add() {
 			this.$forceUpdate()
