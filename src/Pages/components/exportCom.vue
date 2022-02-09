@@ -121,7 +121,7 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 9;
+    z-index: 4;
     width: 100%;
     transition: height 0.2s,background-color 0.15s;
     border-radius: 0 0 20px 20px;
@@ -129,6 +129,7 @@ export default {
     &.open{
         height: 90vh;
         background-color: rgba(255,255,255,1);
+        z-index: 9;
     }
     &.close{
         height: 35px;

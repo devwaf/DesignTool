@@ -12,7 +12,7 @@ class CustomEndpoint extends Endpoint {
     * @return {dom} - 返回渲染dom的根节点
     */
   draw(obj) {
-    console.log(obj);
+    // console.log(obj);
     let path = super.draw(obj);
     if(obj.type) $(path).addClass( "endpoint_" + obj.type);
     return path;

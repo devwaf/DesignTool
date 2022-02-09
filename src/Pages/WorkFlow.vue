@@ -22,8 +22,8 @@
       
     </div>
     <div class="work-flow-canvas" id="work-flow-canvas"></div>
-    <div class="work-flow-options">
-      <WorkFlowOptions :data="activeNode" @submit="optionsSubmit" />
+    <div class="work-flow-options" :class="Object.keys(activeNode).length > 0 ? 'open' : 'close' ">
+      <WorkFlowOptions  :data="activeNode" @submit="optionsSubmit" />
     </div>
     <ExportCom :data="nodeList" />
   </div>
@@ -234,6 +234,7 @@ export default {
     },
     // 点击节点
     nodeClick(data){
+      console.log(data);
       // console.log(this.nodeList);
       let node =this.nodeList.find(node=>node.id==data.node.id)
       // console.log(node.data);
@@ -308,10 +309,24 @@ export default {
     },
     linkDisconnect(data){
       let {sourceNode,targetNode} = data
+      // console.log(sourceNode,"sourceNode");
+      // console.log(targetNode,"targetNode");
+      switch (targetNode.options.data.type) {
+        case "Operation":
+          let index = this.nodeList.findIndex(node=> node.id == targetNode.id)
+          this.nodeList[index].data.args.source = this.nodeList[index].data.args.source.filter(s=>s!=sourceNode.id) 
+          break;
+      
+        case "Var":
+          
+          break;
+      }
+
+
+
+
       if(targetNode.options.data.type === "Operation"){
-        let index = this.nodeList.findIndex(node=> node.id == targetNode.id)
-        console.log(this.nodeList[index]);
-        this.nodeList[index].data.args.source = this.nodeList[index].data.args.source.filter(s=>s!=sourceNode.id) 
+
 
       }else if(sourceNode.options.data.type === "Operation"){
         let index = this.nodeList.findIndex(node=> node.id == sourceNode.id)
@@ -380,13 +395,21 @@ export default {
     }
   }
   .work-flow-options {
-    width: 400px;
+    transition: width 0.2s linear;
     overflow: auto;
     background-color: #3c3a3a;
+    &.open{
+      width: 400px;
+    }
+    &.close{
+      width: 0px;
+      overflow: hidden;
+    }
   }
   .work-flow-canvas {
     position: relative;
-    width: calc(100% - 500px);
+    // width: calc(100% - 500px);
+    flex: 1;
     background-color: #aaa;
   }
 }
@@ -453,6 +476,17 @@ export default {
       &:last-child {
         margin-bottom: 0;
       }
+    }
+  }
+  .node-close-icon{
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #333;
+    border-radius: 50%;
+    &:hover{
+      background-color: #1ce286;
+      color: #fff;
     }
   }
 }

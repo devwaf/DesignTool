@@ -18,7 +18,7 @@ class CustomNode extends Node {
         .css('height', data.options.height)
         .attr('id', data.id)
         .addClass("node_" +  data.options.data.type)
-        console.log(data,"node");
+        // console.log(data,"node");
         // 标题
         if(data.options.label){
             let nodeLabel = $(`<h4 class='node-label'>${data.options.label}</h4>`)
@@ -34,6 +34,7 @@ class CustomNode extends Node {
         //     })
         //     container.append(nodeContent)
         // }
+        container.append(`<i class="el-icon-close node-close-icon"></i>`)
         this.container = container
         // this.markEvent()
         return container[0]
