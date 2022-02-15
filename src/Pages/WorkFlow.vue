@@ -1,30 +1,29 @@
 <template>
   <div class="work-flow-container" @mousemove="onMoseMove">
     <div class="work-flow-menu">
-      <section class="menu-block">
-        <div class="menu-box" :key="pIndex" v-for="(menu, pIndex) in menus">
-          <div class="menu-title"> {{menu.label}} </div>
-            <ul>
-              <li
-                class="menu-li"
-                :key="cIndex"
-                v-for="(mc,cIndex) in menu.children"
-                @mousedown="liOnmouseDown(pIndex,cIndex, $event)"
-                @mouseup="liOnmouseUp"
-              >
-                <div>
-                  {{ mc.label }}
-                </div>
-              </li>
-            </ul>
-        </div>
-      </section>
-      
+        <section class="menu-block">
+          <div class="menu-box" :key="pIndex" v-for="(menu, pIndex) in menus">
+            <div class="menu-title"> {{menu.label}} </div>
+              <ul>
+                <li
+                  class="menu-li"
+                  :key="cIndex"
+                  v-for="(mc,cIndex) in menu.children"
+                  @mousedown="liOnmouseDown(pIndex,cIndex, $event)"
+                  @mouseup="liOnmouseUp"
+                >
+                  <div>
+                    {{ mc.label }}
+                  </div>
+                </li>
+              </ul>
+          </div>
+        </section>
     </div>
     <div class="work-flow-canvas" id="work-flow-canvas"></div>
-    <div class="work-flow-options" :class="Object.keys(activeNode).length > 0 ? 'open' : 'close' ">
+    <!-- <div class="work-flow-options" :class="Object.keys(activeNode).length > 0 ? 'open' : 'close' ">
       <WorkFlowOptions  :data="activeNode" @submit="optionsSubmit" />
-    </div>
+    </div> -->
     <ExportCom :data="nodeList" />
   </div>
 </template>
@@ -48,6 +47,7 @@ export default {
       nodeList: [],
       edgeList: [],
       groupList: [],
+      endpointMap:{},
       menus: Menus,
       isDrag: false,
       activeIndex: {
@@ -93,7 +93,6 @@ export default {
     },
     // menu按下开启拖拽模式
     liOnmouseDown(pIndex,cIndex) {
-
       let activeLi = $($(".menu-box")[pIndex]).find("li.menu-li")[cIndex];
       const JL = $(activeLi);
       let w = JL.width();
@@ -139,54 +138,38 @@ export default {
       }
 
       // 判断
-      if(pMenu.type === "Geometry"){
-          endpoints.push({
-            id: getUUId(),
-            orientation: [-1, 0],
-            // type:"target"
-          })
-          endpoints.push({
-            id: getUUId(),
-            orientation: [1, 0],
-            // type:"source"
-          })
+      // if(pMenu.type === "Geometry"){
+      //     endpoints.push({
+      //       id: getUUId(),
+      //       orientation: [-1, 0],
+      //       // type:"target"
+      //     })
+      //     endpoints.push({
+      //       id: getUUId(),
+      //       orientation: [1, 0],
+      //       // type:"source"
+      //     })
 
-      }else if(pMenu.type === "Operation"){
-        // 特殊 运算符 放置只有一个target
-        if(menu.content !== "Place"){
-          endpoints.push({
-            id: getUUId(),
-            orientation: [-1, 0],
-            type:"target",
-            limitNum:2,
-            Class:Endpoint
-          })
-        }
-        endpoints.push({
-          id: getUUId(),
-          orientation: [1, 0],
-          type:"source",
-          limitNum:1,
-          Class:Endpoint
-        })
-      }else if(pMenu.type === "Var"){
-        // 中间变量
-        endpoints.push({
-          id: getUUId(),
-          orientation: [-1, 0],
-          type:"target",
-          limitNum:2,
-          Class:Endpoint
-        })
-        endpoints.push({
-          id: getUUId(),
-          orientation: [1, 0],
-          type:"source",
-          limitNum:1,
-          Class:Endpoint
-        })
-      }
-      console.log(liP.top,liP.left);
+      // }else if(pMenu.type === "Operation"){
+      //   // 特殊 运算符 放置只有一个target
+      //   if(menu.content !== "Place"){
+      //     endpoints.push({
+      //       id: getUUId(),
+      //       orientation: [-1, 0],
+      //       type:"target",
+      //       limitNum:2,
+      //       Class:Endpoint
+      //     })
+      //   }
+      //   endpoints.push({
+      //     id: getUUId(),
+      //     orientation: [1, 0],
+      //     type:"source",
+      //     limitNum:1,
+      //     Class:Endpoint
+      //   })
+      // }
+      // console.log(liP.top,liP.left);
       this.nodeList.push({
           // 数据id及节点id保存一致
           id,
@@ -196,7 +179,7 @@ export default {
           content: content,
           // args:menu.args,
           data:{...menu,type:pMenu.type,id},
-          endpoints,
+          // endpoints,
           Class: Node,
         });
       this.canvas.addNode(this.nodeList[this.nodeList.length-1])
@@ -211,12 +194,25 @@ export default {
       JL.css("top", evt.y);
     },
     canvasMarkEvent(){
-      let events = ["system.node.click","system.link.connect","system.links.delete","system.endpoint.limit"]
+      let events = ["system.node.click","system.link.connect","system.links.delete","system.endpoint.limit","custom.node.delete","custom.node.update","custom.node.insetEndPoint"]
       events.forEach(event=>{
         this.canvas.on(event,(data)=>{
           switch(event){
-            case "system.node.click":
-              this.nodeClick(data)
+            // case "system.node.click":
+            //   this.nodeClick(data)
+            //   break;
+            case "custom.node.update":
+              console.log(data);
+              let index = this.nodeList.findIndex(node=>node.id == data.id)
+              this.nodeList[index].label = data.options.label
+              this.nodeList[index].data = data.options.data
+              break;
+            case "custom.node.insetEndPoint":
+              // console.log(data);
+              this.endpointMap[data.id] = data.endpointList
+              break;
+            case "custom.node.delete":
+              this.nodeDelete(data)
               break;
             case "system.link.connect":
               // console.log(data);
@@ -238,65 +234,85 @@ export default {
       // console.log(this.nodeList);
       let node =this.nodeList.find(node=>node.id==data.node.id)
       // console.log(node.data);
-      this.activeNode = node.data
+      this.activeNode = node && node.data
+    },
+    // 删除节点
+    nodeDelete(data){
+      this.nodeList = this.nodeList.filter(n=>n.id!=data.id)
+      this.canvas.removeNode(data.id)
+      console.log(this.nodeList);
+      // let removeEdges = this.edgeList.filter(e=> (e.sourceNode == data.id || e.targetNode == data.id) )
+      this.edgeList = this.edgeList.filter(e=> (e.sourceNode != data.id && e.targetNode != data.id) )
+      delete this.endpointMap[data.id]
+      console.log(this.endpointMap);
+      // console.log(removeEdges,this.edgeList,data.id);
+      // this.removeEdges.forEach(edge=>{
+
+      //   if(edge.sourceNode == data.id){
+
+      //   }else if(edge.targetNode == data.id){
+
+      //   }
+         
+      // })
     },
     linkConnect(data){
       if(this.isDraw) return
       if(!data) return
       let {sourceNode,targetNode,sourceEndpoint,targetEndpoint} = data
       // 前后节点均为运算组件则直接返回 并删除连接线
-      if(sourceNode.options.data.type === targetNode.options.data.type && targetNode.options.data.type  === "Operation"){
-        this.canvas.removeEdge(data.id)
-        return
-      }else if(sourceNode.options.data.type === "Geometry" &&  targetNode.options.data.type === "Var"){
-        this.canvas.removeEdge(data.id)
-        return
-      }
+      // if(sourceNode.options.data.type === targetNode.options.data.type && targetNode.options.data.type  === "Operation"){
+      //   this.canvas.removeEdge(data.id)
+      //   return
+      // }else if(sourceNode.options.data.type === "Geometry" &&  targetNode.options.data.type === "Var"){
+      //   this.canvas.removeEdge(data.id)
+      //   return
+      // }
+ 
 
+      // console.log(sourceNode.options.data.type,targetNode.options.data.type);
+      // // 中间变量操作
+      // if(targetNode.options.data.type == "Var"){
+      //   let node = this.nodeList.find(n=>n.data.id == sourceNode.id)
+      //   let index = this.nodeList.findIndex(n=>n.data.id == targetNode.id)
+      //   let args = this.nodeList[index].data.args
+      //   // console.log(args);
+      //   // console.log(node);
+      //   if(sourceNode.options.data.type == "Operation"){
+      //     args.geometry = args.geometry.concat(node.data.args.source)
+      //     args.operation.push(sourceNode.id)
 
-      console.log(sourceNode.options.data.type,targetNode.options.data.type);
-      // 中间变量操作
-      if(targetNode.options.data.type == "Var"){
-        let node = this.nodeList.find(n=>n.data.id == sourceNode.id)
-        let index = this.nodeList.findIndex(n=>n.data.id == targetNode.id)
-        let args = this.nodeList[index].data.args
-        console.log(args);
-        console.log(node);
-        if(sourceNode.options.data.type == "Operation"){
-          args.geometry = args.geometry.concat(node.data.args.source)
-          args.operation.push(sourceNode.id)
+      //   }else if(sourceNode.options.data.type == "Geometry"){
+      //     args.geometry.push(node.data.id)
 
-        }else if(sourceNode.options.data.type == "Geometry"){
-          args.geometry.push(node.data.id)
+      //   }else if(sourceNode.options.data.type == "Var"){
+      //     args.geometry = args.geometry.concat(node.data.args.geometry)
+      //     args.operation = args.operation.concat(sourceNode.options.data.operation)
 
-        }else if(sourceNode.options.data.type == "Var"){
-          args.geometry = args.geometry.concat(node.data.args.geometry)
-          args.operation = args.operation.concat(sourceNode.options.data.operation)
+      //   }
 
-        }
-
-      }
+      // }
 
 
       // 运算符操作
-      let flag = null,prop
-      if(sourceNode.options.data.type == "Operation"){
-        flag = "source"
-        prop = "target"
+      // let flag = null,prop
+      // if(sourceNode.options.data.type == "Operation"){
+      //   flag = "source"
+      //   prop = "target"
 
-      }else if(targetNode.options.data.type == "Operation"){
-        flag = "target"
-        prop = "source"
-      }
-      // 非运算组件不进行下列操作
-      if(!flag) return 
-      let index = this.nodeList.findIndex(node => node.id == data[flag+"Node"].id)
-      // source 输入为 多进 输出为唯一
-      if(Array.isArray(this.nodeList[index].data.args[prop])){
-         this.nodeList[index].data.args[prop].push(data[prop+"Node"].id)
-      }else{
-        this.nodeList[index].data.args[prop] = data[prop+"Node"].id
-      }
+      // }else if(targetNode.options.data.type == "Operation"){
+      //   flag = "target"
+      //   prop = "source"
+      // }
+      // // 非运算组件不进行下列操作
+      // if(!flag) return 
+      // let index = this.nodeList.findIndex(node => node.id == data[flag+"Node"].id)
+      // // source 输入为 多进 输出为唯一
+      // if(Array.isArray(this.nodeList[index].data.args[prop])){
+      //    this.nodeList[index].data.args[prop].push(data[prop+"Node"].id)
+      // }else{
+      //   this.nodeList[index].data.args[prop] = data[prop+"Node"].id
+      // }
       // 保存连接线
       this.edgeList.push({
         source: sourceEndpoint.id,
@@ -354,6 +370,7 @@ export default {
       width: 200px;
       height: 100%;
       background-color: #3c3a3a;
+      overflow: auto;
       .menu-title{
         padding: 6px 2px;
         color: #f1f1f1;
@@ -437,6 +454,7 @@ export default {
 }
 // 节点
 .work-flow-node {
+  padding-bottom: 10px;
   width: 150px;
   text-align: center;
   background: #fff;
@@ -460,12 +478,41 @@ export default {
   &.node_Var{
     background-color: #97731f;
   }
+  .outpoint{
+    height: 10px;
+  }
+  .sourceEndPoint{
+    right: 0;
+  }
+  .targetEndPoint{
+    background-color: #fff;
+  }
+  .node-title{
+    display: flex;
+    align-items: center;
+    .node-label{
+      flex: 1;
+    }
+    .title-icon{
+      &:hover{
+        color: #1ce286;
+      }
+    }
+  }
   .node-label {
     padding: 10px 10px;
     margin: 0;
     color: #fff;
     font-weight: 500;
     font-size: 14px;
+  }
+  .node-item{
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+    .prop_content{
+      flex: 1;
+    }
   }
   .node-content {
     padding: 10px 15px;
@@ -476,17 +523,6 @@ export default {
       &:last-child {
         margin-bottom: 0;
       }
-    }
-  }
-  .node-close-icon{
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #333;
-    border-radius: 50%;
-    &:hover{
-      background-color: #1ce286;
-      color: #fff;
     }
   }
 }

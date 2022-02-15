@@ -1,58 +1,5 @@
 function menuList(){
 
-    // const menus = [
-    //     {
-    //         label:"几何体",
-    //         type:"Geo",
-    //         content:"Box",
-    //         args:{
-    //             height:100,
-    //             width:100,
-    //             length:100,
-    //             origin:{
-    //                 x:0,
-    //                 y:0,
-    //                 z:0
-    //             }
-    //         }
-    //     },
-    //     {
-    //         label:"自身运算",
-    //         type:"SelfOp",
-    //         content:"Rotation",
-    //         args:{
-    //             x:0,
-    //             y:0,
-    //             z:0
-    //         }
-    //     },
-    //     {
-    //         label:"相互运算_copy",
-    //         type:"Op",
-    //         content:"Copy",
-    //         args:{
-    //             souceName:"",
-    //             targentName:""
-    //         }
-    //     },
-    //     {
-    //         label:"相互运算_and",
-    //         type:"op",
-    //         content:"Union",
-    //         args:{
-    //             opName1:"",
-    //             opName2:"",
-    //             targentName:""
-    //         }
-    //     },
-    //     {
-    //         label:"中间变量",
-    //         type:"variable",
-    //         content:"Variable",
-    //         args:{}
-    //     }
-    // ]
-
     const menus = [
         {
             label:"几何体",
@@ -62,25 +9,25 @@ function menuList(){
                     label:"圆弧1",
                     content:"Arc1",
                     args:{
-                        degree:0
+                        degree:0,
+                        color:'rgba(255, 255, 255, 0.8)',
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        rotate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        scale:{
+                            x:1,
+                            y:1,
+                            z:1
+                        }
                     },
                     customArgs:[],
-                    color:'rgba(255, 255, 255, 0.8)',
-                    translate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    rotate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    scale:{
-                        x:1,
-                        y:1,
-                        z:1
-                    }
                 },
                 {
                     label:"圆弧2",
@@ -88,72 +35,73 @@ function menuList(){
                     args:{
                         p1:{x:0,y:0,z:0},
                         p2:{x:0,y:0,z:0},
-                        p3:{x:0,y:0,z:0}
+                        p3:{x:0,y:0,z:0},
+                        color:'rgba(19, 206, 102, 0.8)',
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        rotate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        scale:{
+                            x:1,
+                            y:1,
+                            z:1
+                        }
                     },
                     customArgs:[],
-                    color:'rgba(19, 206, 102, 0.8)',
-                    translate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    rotate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    scale:{
-                        x:1,
-                        y:1,
-                        z:1
-                    }
                 },
                 {
                     label:"cube",
                     content:"Cube",
-                    args:{},
+                    args:{
+                        color:'rgba(255, 255, 255, 0.8)',
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        rotate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        scale:{
+                            x:1,
+                            y:1,
+                            z:1
+                        }
+                    },
                     customArgs:[],
-                    color:'rgba(255, 255, 255, 0.8)',
-                    translate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    rotate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    scale:{
-                        x:1,
-                        y:1,
-                        z:1
-                    }
                 },
                 {
                     label:"二维线段",
                     content:"Line2D",
                     args:{
                         p1:{x:0,y:0,z:0},
-                        p2:{x:0,y:0,z:0}
+                        p2:{x:0,y:0,z:0},
+                        color:'rgba(255, 255, 255, 0.8)',
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        rotate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        scale:{
+                            x:1,
+                            y:1,
+                            z:1
+                        }
                     },
                     customArgs:[],
-                    color:'rgba(255, 255, 255, 0.8)',
-                    translate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    rotate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    scale:{
-                        x:1,
-                        y:1,
-                        z:1
-                    }
                 },
                 {
                     label:"三维线段",
@@ -161,47 +109,49 @@ function menuList(){
                     args:{
                         p1:{x:0,y:0,z:0},
                         p2:{x:0,y:0,z:0},
-                        p3:{x:0,y:0,z:0}
+                        p3:{x:0,y:0,z:0},
+                        color:'rgba(255, 255, 255, 0.8)',
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        rotate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        scale:{
+                            x:1,
+                            y:1,
+                            z:1
+                        }
                     },
                     customArgs:[],
-                    color:'rgba(255, 255, 255, 0.8)',
-                    translate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    rotate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    scale:{
-                        x:1,
-                        y:1,
-                        z:1
-                    }
+                    
                 },
                 {
                     label:"section",
                     content:"Section",
-                    args:{},
+                    args:{
+                        color:'rgba(255, 255, 255, 0.8)',
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        rotate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        },
+                        scale:{
+                            x:1,
+                            y:1,
+                            z:1
+                        }
+                    },
                     customArgs:[],
-                    color:'rgba(255, 255, 255, 0.8)',
-                    translate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    rotate:{
-                        x:0,
-                        y:0,
-                        z:0
-                    },
-                    scale:{
-                        x:1,
-                        y:1,
-                        z:1
-                    }
                 }
             ]
         },
@@ -256,17 +206,58 @@ function menuList(){
             ]
         },
         {
-            label:"中间变量",
-            type:"Var",
+          label:"数值组件",
+          type:"Number",
+          children:[
+            {
+                label:"数值",
+                content:"Number",
+                value:10
+            }
+          ]
+        },
+        {
+            label:"数值运算组件",
+            type:"NumberOperation",
             children:[
                 {
-                    label:"中间变量",
-                    content:"Var",
-                    args:{
-                        geometry:[],
-                        operation:[]
-                    },
-                    customArgs:[],
+                    label:"add",
+                    content:"Add",
+                    args:{A:0,B:0},
+                    alge:"+"
+                },
+                {
+                    label:"sub",
+                    content:"Sub",
+                    args:{A:0,B:0},
+                    alge:"-"
+                },
+                {
+                    label:"mul",
+                    content:"Mul",
+                    args:{A:0,B:0},
+                    alge:"*"
+                },
+                {
+                    label:"divide",
+                    content:"Add",
+                    args:{A:0,B:0},
+                    alge:"/"
+                }
+            ]
+        },
+        {
+            label:"属性组件",
+            type:"Props",
+            children:[
+                {
+                    label:"平移",
+                    content:"translation",
+                    value:[
+                        {prop:"x",value:0},
+                        {prop:"y",value:0},
+                        {prop:"z",value:0},
+                    ]
                 }
             ]
         }
