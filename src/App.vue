@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <WorkFlow/>
+    <!-- <WorkFlow/> -->
+    <router-view></router-view>
   </div>
 </template>
 

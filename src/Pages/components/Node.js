@@ -105,7 +105,7 @@ class CustomNode extends Node {
     }
 
     _onAddNodeAgrs(container,data){
-        console.log(Object.keys(data.args));
+        // console.log(Object.keys(data.args));
         Object.keys(data.args).forEach(key=>{
             let uuid = getUUId()
             // v.uuid = uuid

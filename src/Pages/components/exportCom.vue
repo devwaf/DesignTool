@@ -78,19 +78,35 @@ export default {
         expandContainer(){
             this.isExpand = !this.isExpand
             if(this.isExpand){
-                console.log(this.$parent._data)
-                let nodeList = this.$parent._data.nodeList
+                let nodeList = this.setPropUuidByEdges()
                 let obj = {}
+                let data = {}
                 nodeList.forEach(node=>{
-                    if(!obj.hasOwnProperty(node.data.type)){
-                        obj[node.data.type] = [node.data]
+                    data = {label:node.content,name:node.label,uuid:node.id}
+                    if(node.type==="Props"){
+                        Array.isArray(node.value) ? node.value.forEach(v=>data[v.prop]=v.value) : data.value = node.value
+                    }else if(node.type ==="Number"){
+                        data.value = node.value
                     }else{
-                        obj[node.data.type].push(node.data)
+                        data = {...data,...node.args}
+                    }
+
+                    if(!obj.hasOwnProperty(node.type)){
+                        obj[node.type] = [data]
+                    }else{
+                        obj[node.type].push(data)
                     }
                 })
                 // console.log(obj);
-                this.jsonData = obj
-                this.setDataByEdges()
+                this.jsonData = {
+                    number: [].concat(obj.Number||[]).concat(obj.NumberOperation||[]),
+                    geometry:[].concat(obj.Geometry||[]).concat(obj.Operation||[]),
+                    parameter:obj.Props||[]
+                }
+                // this.setDataByEdges()
+                // this.setPropUuidByEdges()
+            }else{
+                this.jsonData = {}
             }
         },
         // 根据连接线赋值
@@ -186,23 +202,50 @@ export default {
                 })
             })
 
-            // sourceNode,targetNode,   source 开始端点id   ,target 结束端点id
-
-            // edges.forEach(({sourceNode,targetNode,source,target})=>{
-
-            //     endpointMap =  Array.from(nodeEndpointMap[sourceNode])
-            //     index = endpointMap.findIndex(f=>f.uuid == source)
-            //     if(index !=-1){
-            //         endpoint = endpointMap[index]
-            //         if(endpoint)
-            //     }
-            // })
+            
 
 
 
 
 
         },
+
+        setPropUuidByEdges(){
+            const nodeMap = {}
+            JSON.parse(JSON.stringify(this.$parent._data.nodeList)).forEach(node=>{
+                nodeMap[node.id] = node.data
+                // 更新最新的label值
+                nodeMap[node.id].label = node.label
+            })
+            const edgeList = this.$parent._data.edgeList
+            let endpointMap = this.$parent._data.endpointMap
+            // sourceNode,targetNode,   source 开始端点id   ,target 结束端点id
+            let reslut = []
+            edgeList.forEach(({sourceNode,targetNode,source,target})=>{
+                let targetNodeEndpoints = endpointMap[targetNode]
+                let index = targetNodeEndpoints.findIndex(f=>f.uuid == target)
+                let props = targetNodeEndpoints[index]
+
+                switch (nodeMap[targetNode].type) {
+                    case "NumberOperation":
+                        nodeMap[targetNode].args[props.key] = sourceNode
+                    case "Geometry":
+                        nodeMap[targetNode].args[props.key] = sourceNode
+                    case "Operation":
+                        nodeMap[targetNode].args[props.key] = sourceNode
+                        break;
+                    case "Props":
+                        index = nodeMap[targetNode].value.findIndex(v=>v.prop==props.key)
+                        nodeMap[targetNode].value[index].value = sourceNode
+                        break;
+                    default:
+                        break;
+                }
+            })
+            
+            return Object.values(nodeMap)
+        },
+
 
         setJson(){
             let json = {

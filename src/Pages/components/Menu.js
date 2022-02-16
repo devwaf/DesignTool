@@ -163,8 +163,9 @@ function menuList(){
                     label:"并集",
                     content:"Union",
                     args:{
-                        source:[],
-                        target:null
+                        A:null,
+                        B:null,
+                        // target:null
                     },
                     customArgs:[],
                 },
@@ -172,8 +173,9 @@ function menuList(){
                     label:"交集",
                     content:"Intersect",
                     args:{
-                        source:[],
-                        target:null
+                        A:null,
+                        B:null,
+                        // target:null
                     },
                     customArgs:[],
                 },
@@ -181,8 +183,9 @@ function menuList(){
                     label:"差集",
                     content:"Difference",
                     args:{
-                        source:[],
-                        target:null
+                        A:null,
+                        B:null,
+                        // target:null
                     },
                     customArgs:[],
                 },
@@ -190,8 +193,9 @@ function menuList(){
                     label:"组合",
                     content:"Combine",
                     args:{
-                        source:[],
-                        target:null
+                        A:null,
+                        B:null,
+                        // target:null
                     },
                     customArgs:[],
                 },
@@ -199,7 +203,8 @@ function menuList(){
                     label:"放置",
                     content:"Place",
                     args:{
-                        target:[]
+                        // target:[]
+                        A:null,
                     },
                     customArgs:[],
                 }
@@ -258,6 +263,59 @@ function menuList(){
                         {prop:"y",value:0},
                         {prop:"z",value:0},
                     ]
+                },
+                {
+                    label:"旋转",
+                    content:"rotate",
+                    value:[
+                        {prop:"x",value:0},
+                        {prop:"y",value:0},
+                        {prop:"z",value:0},
+                    ]
+                },
+                {
+                    label:"缩放",
+                    content:"scale",
+                    value:[
+                        {prop:"x",value:0},
+                        {prop:"y",value:0},
+                        {prop:"z",value:0},
+                    ]
+                },
+                {
+                    label:"长",
+                    content:"long",
+                    value:[{prop:"long",value:0}]
+                },
+                {
+                    label:"宽",
+                    content:"width",
+                    value:[{prop:"width",value:0}]
+                },
+                {
+                    label:"高",
+                    content:"height",
+                    value:[{prop:"height",value:0}]
+                },
+                {
+                    label:"颜色",
+                    content:"color",
+                    value:[
+                        {prop:"r",value:0},
+                        {prop:"g",value:0},
+                        {prop:"b",value:0},
+                        {prop:"a",value:1},
+                    ]
+                },
+                {
+                    label:"透明度",
+                    content:"alpha",
+                    value:[
+                        {prop:"r",value:0},
+                        {prop:"g",value:0},
+                        {prop:"b",value:0},
+                        {prop:"a",value:1},
+                    ] 
                 }
             ]
         }

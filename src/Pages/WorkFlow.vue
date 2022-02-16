@@ -1,7 +1,7 @@
 <template>
   <div class="work-flow-container" @mousemove="onMoseMove">
     <div class="work-flow-menu">
-        <section class="menu-block">
+      <section class="menu-block">
           <div class="menu-box" :key="pIndex" v-for="(menu, pIndex) in menus">
             <div class="menu-title"> {{menu.label}} </div>
               <ul>
@@ -77,6 +77,17 @@ export default {
         nodes: this.nodeList,
         edges: this.edgeList,
         groups: this.groupList,
+      },()=>{
+        canvas.setGridMode(true, {
+          isAdsorb: false,         // 是否自动吸附,默认关闭
+          theme: {
+            shapeType: 'circle',     // 展示的类型，支持line & circle
+            gap: 15,               // 网格间隙
+            background: 'rgba(0, 0, 0, 0.65)',     // 网格背景颜色
+            circleRadiu: 0.5,        // 圆点半径
+            circleColor: 'rgba(255, 255, 255, 0.8)'    // 圆点颜色
+          }
+        });
       });
       this.canvas = canvas
       this.canvasMarkEvent()
@@ -260,6 +271,37 @@ export default {
       if(this.isDraw) return
       if(!data) return
       let {sourceNode,targetNode,sourceEndpoint,targetEndpoint} = data
+
+      /**
+       * 当几何运算组件接入时候
+       * 数值组件及数值运算组件不能直接接入
+       */
+      let flag
+      if(targetNode.data.options.data.type === "Operation"){
+        flag = ["Operation","Geometry"].includes(sourceNode.data.options.data.type)
+        if(!flag){
+          this.$message.warning("请接入几何、几何运算组件")
+          this.canvas.removeEdge(data.id)
+          return
+        }
+      }else if(targetNode.data.options.data.type === "Geometry"){
+        flag = sourceNode.data.options.data.type == "Operation"
+        if(flag){
+          this.$message.warning("请接入几何运算组件")
+          this.canvas.removeEdge(data.id)
+        }
+      }
+
+      flag = ["NumberOperation","Props"].includes(targetNode.data.options.data.type)
+      if(flag){
+        flag = ["NumberOperation","Number"].includes(sourceNode.data.options.data.type)
+        if(!flag){
+          this.$message.warning("请接入几何组件")
+          this.canvas.removeEdge(data.id)
+          return
+        }
+      }
+
       // 前后节点均为运算组件则直接返回 并删除连接线
       // if(sourceNode.options.data.type === targetNode.options.data.type && targetNode.options.data.type  === "Operation"){
       //   this.canvas.removeEdge(data.id)
@@ -324,31 +366,40 @@ export default {
       // this.redrawCanvas()
     },
     linkDisconnect(data){
+      /**
+       * sourceNode 开始节点
+       * targetNode 结束节点
+       */
       let {sourceNode,targetNode} = data
+      
       // console.log(sourceNode,"sourceNode");
       // console.log(targetNode,"targetNode");
-      switch (targetNode.options.data.type) {
-        case "Operation":
-          let index = this.nodeList.findIndex(node=> node.id == targetNode.id)
-          this.nodeList[index].data.args.source = this.nodeList[index].data.args.source.filter(s=>s!=sourceNode.id) 
-          break;
+      this.edgeList = this.edgeList.filter(edge=>{
+        return !(edge.sourceNode == sourceNode.id && edge.targetNode ==  targetNode.id)
+      })
+      // console.log(this.edgeList);
+      // switch (targetNode.options.data.type) {
+      //   case "Operation":
+      //     let index = this.nodeList.findIndex(node=> node.id == targetNode.id)
+      //     this.nodeList[index].data.args.source = this.nodeList[index].data.args.source.filter(s=>s!=sourceNode.id) 
+      //     break;
       
-        case "Var":
+      //   case "Var":
           
-          break;
-      }
+      //     break;
+      // }
 
 
 
 
-      if(targetNode.options.data.type === "Operation"){
+      // if(targetNode.options.data.type === "Operation"){
 
 
-      }else if(sourceNode.options.data.type === "Operation"){
-        let index = this.nodeList.findIndex(node=> node.id == sourceNode.id)
-        console.log(this.nodeList[index]);
-        this.nodeList[index].data.args.target = null
-      }
+      // }else if(sourceNode.options.data.type === "Operation"){
+      //   let index = this.nodeList.findIndex(node=> node.id == sourceNode.id)
+      //   console.log(this.nodeList[index]);
+      //   this.nodeList[index].data.args.target = null
+      // }
     },
     // 属性面板
     optionsSubmit(data){
@@ -461,7 +512,7 @@ export default {
   vertical-align: middle;
   border-radius: 5px;
   position: absolute;
-  background: #3c3a3a;
+  background: rgba($color: #180707, $alpha: .6);
   text-align: center;
   color: #bfbfbf;
   cursor: pointer;
@@ -470,13 +521,16 @@ export default {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.8);
   }
   &.node_Geometry{
-    background-color: #173474;
+    background-color: rgba($color: #173474, $alpha: .6);
   }
   &.node_Operation{
-    background-color: #255e43;
+    background-color: rgba($color: #255e43, $alpha: .6);
   }
-  &.node_Var{
-    background-color: #97731f;
+  &.node_Props{
+    background-color: rgba($color: #97731f, $alpha: .6);
+  }
+  &.node_NumberOperation{
+    background-color: rgba($color: #5a3110, $alpha: .6);
   }
   .outpoint{
     height: 10px;
