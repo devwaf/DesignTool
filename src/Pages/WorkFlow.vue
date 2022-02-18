@@ -13,6 +13,7 @@
                   @mouseup="liOnmouseUp"
                 >
                   <div>
+                    <i :class="iconMap[menu.type]"></i>
                     {{ mc.label }}
                   </div>
                 </li>
@@ -55,7 +56,14 @@ export default {
         cIndex:-1
       },
       activeNode:{},
-      isDraw:false
+      isDraw:false,
+      iconMap:{
+          Geometry:"icon-jiheti iconfont",
+          Operation:"icon-yunsuanzujian iconfont",
+          NumberOperation:"icon-shuzhiyunsuanzujian iconfont",
+          Number:"icon-shuzhizujian iconfont",
+          Props:"icon-shuxing iconfont",
+      }
     };
   },
   created() {},
@@ -72,22 +80,27 @@ export default {
         draggable: true, //节点可拖动(可传)
         linkable:true,
         disLinkable:true,
+        theme: {
+          edge: {
+            shapeType: 'AdvancedBezier',
+          }
+        }
       });
       canvas.draw({
         nodes: this.nodeList,
         edges: this.edgeList,
         groups: this.groupList,
       },()=>{
-        canvas.setGridMode(true, {
-          isAdsorb: false,         // 是否自动吸附,默认关闭
-          theme: {
-            shapeType: 'circle',     // 展示的类型，支持line & circle
-            gap: 15,               // 网格间隙
-            background: 'rgba(0, 0, 0, 0.65)',     // 网格背景颜色
-            circleRadiu: 0.5,        // 圆点半径
-            circleColor: 'rgba(255, 255, 255, 0.8)'    // 圆点颜色
-          }
-        });
+        // canvas.setGridMode(true, {
+        //   isAdsorb: false,         // 是否自动吸附,默认关闭
+        //   theme: {
+        //     shapeType: 'circle',     // 展示的类型，支持line & circle
+        //     gap: 15,               // 网格间隙
+        //     background: 'rgba(0, 0, 0, 0.65)',     // 网格背景颜色
+        //     circleRadiu: 0.5,        // 圆点半径
+        //     circleColor: 'rgba(255, 255, 255, 0.8)'    // 圆点颜色
+        //   }
+        // });
       });
       this.canvas = canvas
       this.canvasMarkEvent()
@@ -420,12 +433,13 @@ export default {
     .menu-block{
       width: 200px;
       height: 100%;
-      background-color: #3c3a3a;
+      padding: 10px;
+      background-color: #1D2F37;
       overflow: auto;
       .menu-title{
-        padding: 6px 2px;
-        color: #f1f1f1;
-        border-bottom: 1px dotted #8b8888;
+        // padding: 6px 2px;
+        color: #B7C5FF;
+        // border-bottom: 1px dotted #8b8888;
         user-select: none;
       }
     }
@@ -438,21 +452,28 @@ export default {
       overflow: auto;
       box-sizing: border-box;
       li {
-        padding: 8px 15px;
+        padding: 11px 16px;
         margin-bottom: 10px;
-        border-radius: 4px;
+        // border-radius: 4px;
         text-align: center;
         word-break: break-all;
-        color: #3c3a3a;
-        background-color: #f1f1f1;
+        color: #B7C5FF;
+        background-color: rgba(99, 130, 254, 0.39);
         user-select: none;
         cursor: pointer;
+        &>div{
+          display: flex;
+          align-items: center;
+        }
         &:hover {
           color: #3f2f2f;
           background-color: #fff;
         }
         &:last-child {
           margin-bottom: 0;
+        }
+        .iconfont{
+          margin-right: 5px;
         }
       }
       .drag-li {
@@ -478,27 +499,27 @@ export default {
     position: relative;
     // width: calc(100% - 500px);
     flex: 1;
-    background-color: #aaa;
+    background-color: #263840;
   }
 }
 // 锚点颜色
 .butterflie-circle-endpoint{
   width: 8px;
   height: 8px;
-  background-color: #3db37c;
-  border-color: #3db37c;
+  // background-color: #3db37c;
+  // border-color: #3db37c;
   cursor: move;
   &.endpoint_source{
-    background-color: #E6A23C;
-    border-color: #E6A23C;
+    background-color: transparent;
+    border-color: #FFFFFF;
   }
   &.endpoint_target{
-    background-color: #409EFF;
-    border-color: #409EFF;
+    background: rgba(255, 255, 255, 0.39);
+    // border-color: #409EFF;
   }
 }
 .butterflies-link{
-  stroke:#3db37c;
+  stroke:rgba(255, 255, 255, 0.5);
   &:hover{
     stroke:#6dd4a4;
   }
@@ -512,42 +533,83 @@ export default {
   vertical-align: middle;
   border-radius: 5px;
   position: absolute;
-  background: rgba($color: #180707, $alpha: .6);
+  background: linear-gradient(180deg, rgba($color: #7B39FF, $alpha: .3) 0%, rgba($color: #925EFF, $alpha: .3) 63%, rgba($color: #C1A2FF, $alpha: .3) 100%);
+  box-shadow: 0px 8px 8px #19143B;
   text-align: center;
-  color: #bfbfbf;
+  color: #fff;
   cursor: pointer;
   &.active {
     border: 2px solid #ff8637;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.8);
   }
   &.node_Geometry{
-    background-color: rgba($color: #173474, $alpha: .6);
+    background: linear-gradient(180deg, rgba($color: #6382FE, $alpha: .3) 0%, rgba($color: #A5B6FC, $alpha: .3) 63%, rgba($color: #D6DEFF, $alpha: .3) 100%);
+    box-shadow: 0px 8px 8px #19143B;
+    .node-title::after{
+      background-image: url(../assets/images/Geometry.png);
+    }
   }
   &.node_Operation{
-    background-color: rgba($color: #255e43, $alpha: .6);
+    background: linear-gradient(180deg, rgba($color: #363737, $alpha: .3) 0%, rgba($color: #8F8F8F, $alpha: .3) 63%, rgba($color: #E6E6E6, $alpha: .3) 100%);
+    box-shadow: 0px 8px 8px #132734;
+    .node-title::after{
+      background-image: url(../assets/images/Operation.png);
+    }
   }
   &.node_Props{
-    background-color: rgba($color: #97731f, $alpha: .6);
+    background: linear-gradient(180deg, rgba($color: #00C78A, $alpha: .3) 0%, rgba($color: #56FECB, $alpha: .3) 63%, rgba($color: #C2F9E9, $alpha: .3) 100%);
+    .node-title::after{
+      background-image: url(../assets/images/Props.png);
+    }
   }
   &.node_NumberOperation{
-    background-color: rgba($color: #5a3110, $alpha: .6);
+    background: linear-gradient(180deg, rgba($color: #0099FF, $alpha: .3) 0%, rgba($color: #52B9FE, $alpha: .3) 63%, rgba($color: #B9E0FB, $alpha: .3) 100%);
+    box-shadow: 0px 8px 8px #132734;
+    .node-title::after{
+      background-image: url(../assets/images/NumberOperation.png);
+    }
   }
   .outpoint{
+    padding-top: 5px;
     height: 10px;
   }
   .sourceEndPoint{
     right: 0;
+    background: rgba(255, 255, 255, 0.39);
+    opacity: 0.5;
   }
   .targetEndPoint{
-    background-color: #fff;
+    border-color: #fff;
+    opacity: 0.8;
   }
   .node-title{
     display: flex;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+    &::after{
+      content: "";
+      display: block;
+      background-image: url(../assets/images/default.png);
+      background-size: 100% 100%;
+      background-position: center;
+      width: 100%;
+      height: 150%;
+      position: absolute;
+      z-index: -1;
+      top: -13px;
+      left: 0;
+    }
     .node-label{
       flex: 1;
+      display: flex;
+      align-items: center;
+      .iconfont{
+        margin-right: 2px;
+      }
     }
     .title-icon{
+      padding: 0 10px;
       &:hover{
         color: #1ce286;
       }

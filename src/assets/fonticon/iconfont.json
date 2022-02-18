@@ -1,0 +1,44 @@
+{
+  "id": "3189451",
+  "name": "bimBase",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "bimBase  python 工具",
+  "glyphs": [
+    {
+      "icon_id": "27680806",
+      "name": "属性",
+      "font_class": "shuxing",
+      "unicode": "e736",
+      "unicode_decimal": 59190
+    },
+    {
+      "icon_id": "27680807",
+      "name": "几何体",
+      "font_class": "jiheti",
+      "unicode": "e737",
+      "unicode_decimal": 59191
+    },
+    {
+      "icon_id": "27680808",
+      "name": "数值组件",
+      "font_class": "shuzhizujian",
+      "unicode": "e738",
+      "unicode_decimal": 59192
+    },
+    {
+      "icon_id": "27680809",
+      "name": "数值运算组件",
+      "font_class": "shuzhiyunsuanzujian",
+      "unicode": "e739",
+      "unicode_decimal": 59193
+    },
+    {
+      "icon_id": "27680847",
+      "name": "运算组件",
+      "font_class": "yunsuanzujian",
+      "unicode": "e73a",
+      "unicode_decimal": 59194
+    }
+  ]
+}

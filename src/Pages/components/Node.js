@@ -56,13 +56,22 @@ class CustomNode extends Node {
     }
 
     // 创建节点标题 及可编辑标题 关闭按钮
-    _onCreateTitle(container,data){ 
+    _onCreateTitle(container,data){
+        let icon = {
+            Geometry:"icon-jiheti iconfont",
+            Operation:"icon-yunsuanzujian iconfont",
+            NumberOperation:"icon-shuzhiyunsuanzujian iconfont",
+            Number:"icon-shuzhizujian iconfont",
+            Props:"icon-shuxing iconfont",
+        }
+        console.log(icon[data.options.data.type]);
         if(data.options.label){
             let _this = this
             let nodeLabel = $(`<div class="node-title">
                 <i class="el-icon-close title-icon close-icon"></i>
-                <h4 class='node-label'>${data.options.label}</h4>
-                <i class="el-icon-plus title-icon add-icon"></i>
+                <h4 class='node-label'> <i class="${icon[data.options.data.type]}"></i> ${data.options.label}</h4>
+                <i class="title-icon add-icon"></i>
+                <!-- el-icon-plus -->
             </div>`)
             container.append(nodeLabel)
             let evtDom = nodeLabel.find('.node-label')
@@ -74,7 +83,7 @@ class CustomNode extends Node {
                     evtDom.children().keyup(function(event){
                         if (event.keyCode === 13 || event.keyCode === 27) {
                             data.options.label = evtDom.find("input").focus().val()
-                            evtDom.html(`${ data.options.label}`)
+                            evtDom.html(`<i class="${icon[data.options.data.type]}"></i>  ${ data.options.label}`)
                             // console.log(data);
                             _this._onEmit("update")
                         }
