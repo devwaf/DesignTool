@@ -6,7 +6,7 @@
       <div class="operation-btns" v-show="isExpand">
           <el-button size="small" @click.stop="copyJson"> 复 制 </el-button>
           <el-button size="small" @click.stop="exportJson"> 导 出Json </el-button>
-          <!-- <el-button size="small" @click.stop="openRequest"> 请 求 </el-button> -->
+          <el-button size="small" @click.stop="openRequest"> 请 求 </el-button>
       </div>
       <i class="icon" :class="isExpand ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" @click.stop="expandContainer"></i>
       <el-dialog
@@ -31,6 +31,7 @@
 
 <script>
 import VueJsonViewer from 'vue-json-viewer'
+import { ipcRenderer} from 'electron';
 export default {
     components:{
         VueJsonViewer
@@ -86,7 +87,14 @@ export default {
                     if(node.type==="Props"){
                         Array.isArray(node.value) ? node.value.forEach(v=>data[v.prop]=v.value) : data.value = node.value
                     }else if(node.type ==="Number"){
-                        data.value = node.value
+                        if(node.content=="MutNumber"){
+                            data.args = node.value.map(v=>v.value)
+                        }else{
+                            data.value = node.value
+                        }
+                    }else if(node.type=="NumberOperation"){
+                        console.log(node);
+                        data.value = [node.args.A,node.args.B]
                     }else{
                         data = {...data,...node.args}
                     }
@@ -220,12 +228,11 @@ export default {
             const edgeList = this.$parent._data.edgeList
             let endpointMap = this.$parent._data.endpointMap
             // sourceNode,targetNode,   source 开始端点id   ,target 结束端点id
-            let reslut = []
             edgeList.forEach(({sourceNode,targetNode,source,target})=>{
                 let targetNodeEndpoints = endpointMap[targetNode]
                 let index = targetNodeEndpoints.findIndex(f=>f.uuid == target)
                 let props = targetNodeEndpoints[index]
-
+                
                 switch (nodeMap[targetNode].type) {
                     case "NumberOperation":
                         nodeMap[targetNode].args[props.key] = sourceNode
@@ -234,7 +241,7 @@ export default {
                     case "Operation":
                         nodeMap[targetNode].args[props.key] = sourceNode
                         break;
-                    case "Props":
+                    case "Number":
                         index = nodeMap[targetNode].value.findIndex(v=>v.prop==props.key)
                         nodeMap[targetNode].value[index].value = sourceNode
                         break;
@@ -242,7 +249,6 @@ export default {
                         break;
                 }
             })
-            
             return Object.values(nodeMap)
         },
 
@@ -278,7 +284,8 @@ export default {
             // console.log(file);
         },
         openRequest(){
-            this.isVisiable = true
+            console.log("测试发送");
+            ipcRenderer.send("window-test")
         }
     },
 }

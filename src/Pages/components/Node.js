@@ -1,6 +1,7 @@
 import {Node} from 'butterfly-dag'
 import $ from 'jquery';
 import {getUUId} from '../../utils/utils'
+import { MessageBox } from 'element-ui';
 class CustomNode extends Node {
     constructor(props){
         super(props)
@@ -29,7 +30,8 @@ class CustomNode extends Node {
             this._onAddNodeAgrs(container,data.options.data)
         }else if(data.options.data.type == "Operation"){
             this._onAddNodeAgrs(container,data.options.data)
-        }else if(data.options.data.type == "NumberOperation"){
+        }
+        else if(data.options.data.type == "NumberOperation"){
             // 数值运算组件
             this._onAddNodeAgrs(container,data.options.data)
         }
@@ -58,21 +60,27 @@ class CustomNode extends Node {
     // 创建节点标题 及可编辑标题 关闭按钮
     _onCreateTitle(container,data){
         let icon = {
-            Geometry:"icon-jiheti iconfont",
-            Operation:"icon-yunsuanzujian iconfont",
-            NumberOperation:"icon-shuzhiyunsuanzujian iconfont",
-            Number:"icon-shuzhizujian iconfont",
-            Props:"icon-shuxing iconfont",
+            // Geometry:"icon-jiheti iconfont",
+            // Operation:"icon-yunsuanzujian iconfont",
+            // NumberOperation:"icon-shuzhiyunsuanzujian iconfont",
+            // Number:"icon-shuzhizujian iconfont",
+            // Props:"icon-shuxing iconfont",
         }
-        console.log(icon[data.options.data.type]);
         if(data.options.label){
             let _this = this
             let nodeLabel = $(`<div class="node-title">
                 <i class="el-icon-close title-icon close-icon"></i>
                 <h4 class='node-label'> <i class="${icon[data.options.data.type]}"></i> ${data.options.label}</h4>
-                <i class="title-icon add-icon"></i>
-                <!-- el-icon-plus -->
             </div>`)
+            if(data.options.data.content=="MutNumber"){
+                let i = document.createElement("i")
+                i = $(i).addClass("title-icon add-icon el-icon-plus")
+                nodeLabel.append(i)
+
+                i.on("click",function(evt){
+                    _this._onCreatePropsByDialog(container,data)
+                })
+            }
             container.append(nodeLabel)
             let evtDom = nodeLabel.find('.node-label')
             evtDom.on("dblclick",function(evt) {
@@ -103,11 +111,17 @@ class CustomNode extends Node {
     }
 
     _onCreateOutEndPoint(container,data){
+        let outMap = {
+            Geometry:"G",
+            Operation:"G",
+            Number:"MV",
+            NumberOperation:"V"
+        }
         // 数值类型不需要额外添加输出
-        if(data.type != "Number"){
+        if(data.type != "Number"||data.content=="MutNumber"){
             let uuid = getUUId()
             container.append(`<div class="outpoint">
-                <div class="sourceEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
+                ${outMap[data.type]}<div class="sourceEndPoint butterflie-circle-endpoint" id="${uuid}"> </div>
             </div>`)
             this.endpointList.push({uuid,type:"source",key:null})
         }
@@ -150,6 +164,60 @@ class CustomNode extends Node {
         let nodeItem = container.find(".node-item")
         // console.log(nodeItem);
         this._onEditNodeProp(nodeItem)
+    }
+
+    _onCreatePropsByDialog(container,data){
+        let uuid = getUUId()
+        // console.log("i evt",evt);
+        MessageBox.confirm(`<input class="message-input" id="${uuid}">`, '属性添加', {
+            dangerouslyUseHTMLString:true,
+            distinguishCancelAndClose: true,
+            confirmButtonText: '保存',
+            cancelButtonText: '放弃修改'
+        }).then(() => {
+            let prop =  document.getElementById(uuid).value
+            if(prop.trim()=="")return
+            if(data.options.data.type=="Number"&&data.options.data.content=="MutNumber"){
+                data.options.data.value.push({prop,value:0})
+            }else if(data.options.data.type=="Geometry"){
+                data.options.data.customArgs.push({prop,value:0})
+            }
+            
+            this._onEmit("update")
+
+            
+
+            let nodeItem = $(`<div class="node-item">
+                <div class="targetEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
+                <div class="prop_content"> <div style="display:flex;align-items: center;"> <span style="flex:1;">${prop}</span> <i class="el-icon-close icon-class"></i>  </div> </div>
+            </div>`)
+            container.append(nodeItem)
+
+            this.addEndpoint({
+                id:uuid,
+                dom:document.getElementById(uuid),
+                type:"target",
+                limitNum: 1
+            })
+            this.endpointList.push({uuid,type:"target",key:prop})
+            this._onEmit("insetEndPoint")
+
+            // 删除属性
+            nodeItem.find(".icon-class").on("click",(evt)=>{
+                if(data.options.data.type=="Number"&&data.options.data.content=="MutNumber"){
+                    data.options.data.value.splice(nodeItem.index()-1)
+                }else if(data.options.data.type=="Geometry"){
+                    data.options.data.customArgs.splice(nodeItem.index()-1)
+                }
+                nodeItem.remove()
+                this.endpointList = this.endpointList.filter(e=>e.uuid!=uuid)
+                this._onEmit("update")
+                this._onEmit("insetEndPoint")
+            })
+        })
+        .catch(action => {
+            console.log("取消"+action);
+        });
     }
 
     _onEditNodeProp(dom){

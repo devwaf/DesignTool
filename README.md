@@ -20,7 +20,7 @@ electron:serve
 npm run build
 ```
 
-### 运行桌面程序打包  node 12.x 请修改 node_modules require("fs/promiss") 替换为 require("fs").promiss
+### 运行桌面程序打包  node 12.x 请修改 node_modules require("fs/promises"); 替换为 require("fs").promiss;
 ```
 electron:serve
 ```

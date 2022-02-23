@@ -1,7 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow,ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+const path = require("path")
+// import {createPyProc,exitPyProc} from './tools/main'
+
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -13,27 +16,42 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1960,
+    height: 1080,
     webPreferences: {
-      
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
-    }
+      // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: true,
+    },
+    titleBarStyle:"hidden",
+    titleBarOverlay: true
   })
+
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    
+    // 开启调试模式
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
+    win.webContents.closeDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
 }
+
+
+
+ipcMain.on("window-test",function(){
+  console.log("测试页面通讯");
+})
+
+
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -63,6 +81,9 @@ app.on('ready', async () => {
   //   }
   // }
   createWindow()
+
+  // createPyProc()
+
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -76,6 +97,11 @@ if (isDevelopment) {
   } else {
     process.on('SIGTERM', () => {
       app.quit()
+
+      // exitPyProc()
     })
   }
 }
+
+
+

@@ -433,9 +433,12 @@ export default {
     .menu-block{
       width: 200px;
       height: 100%;
-      padding: 10px;
+      padding: 10px 0;
       background-color: #1D2F37;
       overflow: auto;
+      &::-webkit-scrollbar{
+        display: none;
+      }
       .menu-title{
         // padding: 6px 2px;
         color: #B7C5FF;
@@ -570,8 +573,12 @@ export default {
     }
   }
   .outpoint{
-    padding-top: 5px;
+    padding-top: 10px;
     height: 10px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 18px;
+    align-items: center;
   }
   .sourceEndPoint{
     right: 0;

@@ -1,6 +1,53 @@
 function menuList(){
 
     const menus = [
+        
+        {
+            label:"数值组件",
+            type:"Number",
+            children:[
+              {
+                  label:"数值",
+                  content:"Number",
+                  value:10
+              },
+              {
+                  label:"可变数值",
+                  content:"MutNumber",
+                  value:[]
+              }
+            ]
+          },
+          {
+              label:"数值运算组件",
+              type:"NumberOperation",
+              children:[
+                  {
+                      label:"add",
+                      content:"Add",
+                      args:{A:0,B:0},
+                      alge:"+"
+                  },
+                  {
+                      label:"sub",
+                      content:"Sub",
+                      args:{A:0,B:0},
+                      alge:"-"
+                  },
+                  {
+                      label:"mul",
+                      content:"Mul",
+                      args:{A:0,B:0},
+                      alge:"*"
+                  },
+                  {
+                      label:"divide",
+                      content:"Add",
+                      args:{A:0,B:0},
+                      alge:"/"
+                  }
+              ]
+          },
         {
             label:"几何体",
             type:"Geometry",
@@ -210,115 +257,71 @@ function menuList(){
                 }
             ]
         },
-        {
-          label:"数值组件",
-          type:"Number",
-          children:[
-            {
-                label:"数值",
-                content:"Number",
-                value:10
-            }
-          ]
-        },
-        {
-            label:"数值运算组件",
-            type:"NumberOperation",
-            children:[
-                {
-                    label:"add",
-                    content:"Add",
-                    args:{A:0,B:0},
-                    alge:"+"
-                },
-                {
-                    label:"sub",
-                    content:"Sub",
-                    args:{A:0,B:0},
-                    alge:"-"
-                },
-                {
-                    label:"mul",
-                    content:"Mul",
-                    args:{A:0,B:0},
-                    alge:"*"
-                },
-                {
-                    label:"divide",
-                    content:"Add",
-                    args:{A:0,B:0},
-                    alge:"/"
-                }
-            ]
-        },
-        {
-            label:"属性组件",
-            type:"Props",
-            children:[
-                {
-                    label:"平移",
-                    content:"translation",
-                    value:[
-                        {prop:"x",value:0},
-                        {prop:"y",value:0},
-                        {prop:"z",value:0},
-                    ]
-                },
-                {
-                    label:"旋转",
-                    content:"rotate",
-                    value:[
-                        {prop:"x",value:0},
-                        {prop:"y",value:0},
-                        {prop:"z",value:0},
-                    ]
-                },
-                {
-                    label:"缩放",
-                    content:"scale",
-                    value:[
-                        {prop:"x",value:0},
-                        {prop:"y",value:0},
-                        {prop:"z",value:0},
-                    ]
-                },
-                {
-                    label:"长",
-                    content:"long",
-                    value:[{prop:"long",value:0}]
-                },
-                {
-                    label:"宽",
-                    content:"width",
-                    value:[{prop:"width",value:0}]
-                },
-                {
-                    label:"高",
-                    content:"height",
-                    value:[{prop:"height",value:0}]
-                },
-                {
-                    label:"颜色",
-                    content:"color",
-                    value:[
-                        {prop:"r",value:0},
-                        {prop:"g",value:0},
-                        {prop:"b",value:0},
-                        {prop:"a",value:1},
-                    ]
-                },
-                {
-                    label:"透明度",
-                    content:"alpha",
-                    value:[
-                        {prop:"r",value:0},
-                        {prop:"g",value:0},
-                        {prop:"b",value:0},
-                        {prop:"a",value:1},
-                    ] 
-                }
-            ]
-        }
+        // {
+        //     label:"属性组件",
+        //     type:"Props",
+        //     children:[
+        //         {
+        //             label:"平移",
+        //             content:"translation",
+        //             value:[
+        //                 {prop:"x",value:0},
+        //                 {prop:"y",value:0},
+        //                 {prop:"z",value:0},
+        //             ]
+        //         },
+        //         {
+        //             label:"旋转",
+        //             content:"rotate",
+        //             value:[
+        //                 {prop:"x",value:0},
+        //                 {prop:"y",value:0},
+        //                 {prop:"z",value:0},
+        //             ]
+        //         },
+        //         {
+        //             label:"缩放",
+        //             content:"scale",
+        //             value:[
+        //                 {prop:"x",value:0},
+        //                 {prop:"y",value:0},
+        //                 {prop:"z",value:0},
+        //             ]
+        //         },
+        //         {
+        //             label:"长",
+        //             content:"long",
+        //             value:[{prop:"long",value:0}]
+        //         },
+        //         {
+        //             label:"宽",
+        //             content:"width",
+        //             value:[{prop:"width",value:0}]
+        //         },
+        //         {
+        //             label:"高",
+        //             content:"height",
+        //             value:[{prop:"height",value:0}]
+        //         },
+        //         {
+        //             label:"颜色",
+        //             content:"color",
+        //             value:[
+        //                 {prop:"r",value:0},
+        //                 {prop:"g",value:0},
+        //                 {prop:"b",value:0},
+        //                 {prop:"a",value:1},
+        //             ]
+        //         },
+        //         {
+        //             label:"透明度",
+        //             content:"alpha",
+        //             value:[
+        //                 {prop:"alpha",value:0},
+        //             ] 
+        //         }
+        //     ]
+        // }
     ]
 
     return menus

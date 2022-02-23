@@ -20,7 +20,11 @@ module.exports = {
                 sass:{}
         }
     },
-    
+    pluginOptions:{
+        electronBuilder:{
+            preload: 'src/preload.js',
+        }
+    }
 
 
 }
