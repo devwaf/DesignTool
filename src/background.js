@@ -5,6 +5,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const path = require("path")
 // import {createPyProc,exitPyProc} from './tools/main'
 
+import { execPython } from './tools/runPY'
+
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -24,8 +26,10 @@ async function createWindow() {
       // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       nodeIntegration: true,
+      contextIsolation: false,
+      preload: path.join(__dirname, 'preload.js')
     },
-    titleBarStyle:"hidden",
+    // titleBarStyle:"hidden",
     titleBarOverlay: true
   })
 
@@ -36,7 +40,7 @@ async function createWindow() {
     
     // 开启调试模式
     // if (!process.env.IS_TEST) win.webContents.openDevTools()
-    win.webContents.closeDevTools()
+    win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -47,7 +51,7 @@ async function createWindow() {
 
 
 ipcMain.on("window-test",function(){
-  console.log("测试页面通讯");
+  execPython()
 })
 
 

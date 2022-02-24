@@ -17,11 +17,13 @@
   "dependencies": {
     "butterfly-dag": "^4.1.22",
     "core-js": "^3.6.5",
+    "electron-store": "^8.0.1",
     "element-ui": "^2.15.6",
     "jquery": "^3.6.0",
     "vue": "^2.6.11",
     "vue-json-viewer": "^2.2.21",
-    "vue-router": "^3.5.3"
+    "vue-router": "^3.5.3",
+    "vuex": "3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

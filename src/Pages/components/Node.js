@@ -1,7 +1,7 @@
 import {Node} from 'butterfly-dag'
 import $ from 'jquery';
 import {getUUId} from '../../utils/utils'
-import { MessageBox } from 'element-ui';
+import { MessageBox,Message } from 'element-ui';
 class CustomNode extends Node {
     constructor(props){
         super(props)
@@ -9,9 +9,30 @@ class CustomNode extends Node {
         this.container = null
         this.endpointList = []
         this.data = null
+        this.bufferEndpointMap = {}
+    }
+
+    // 数据初始化
+    init(data){
+        let endpointMap =  window.eStore.get("endpointMap")
+        console.log(endpointMap);
+        if(!endpointMap) return 
+        endpointMap = JSON.parse(endpointMap)
+        let endpoints = endpointMap[data.id]
+        // 新建节点 直接中断
+        if(!endpoints) return
+        let obj = {}
+        endpoints.forEach(point=>{
+            obj[point.key] = point
+        })
+        this.bufferEndpointMap = obj
     }
 
     draw(data) {
+
+        this.init(data)
+        this._onNodeOn()
+
         this.data = data
         let container = $('<div class= "work-flow-node"></div>')
         .css('top', data.top)
@@ -52,8 +73,6 @@ class CustomNode extends Node {
         
         // container.append(`<i class="el-icon-close node-close-icon"></i>`)
         this.container = container
-        // this.markEvent()
-        // console.log(data);
         return container[0]
     }
 
@@ -110,6 +129,17 @@ class CustomNode extends Node {
         }
     }
 
+    // 端口属性(Key)检查获取UUID 主要针对历史数据  通过节点Map
+    _onGetUUIdBYendPointKey(key){
+       let point = this.bufferEndpointMap[key]
+       if(point){
+           return point.uuid
+       }
+
+       return getUUId()
+    }
+
+    // 创建输入端点
     _onCreateOutEndPoint(container,data){
         let outMap = {
             Geometry:"G",
@@ -119,18 +149,19 @@ class CustomNode extends Node {
         }
         // 数值类型不需要额外添加输出
         if(data.type != "Number"||data.content=="MutNumber"){
-            let uuid = getUUId()
+            let uuid = this._onGetUUIdBYendPointKey("source")
             container.append(`<div class="outpoint">
                 ${outMap[data.type]}<div class="sourceEndPoint butterflie-circle-endpoint" id="${uuid}"> </div>
             </div>`)
-            this.endpointList.push({uuid,type:"source",key:null})
+            this.endpointList.push({uuid,type:"source",key:"source"})
         }
     }
 
+    // 除数值类型 args(Array) 添加属性节点
     _onAddNodeAgrs(container,data){
         // console.log(Object.keys(data.args));
         Object.keys(data.args).forEach(key=>{
-            let uuid = getUUId()
+            let uuid = this._onGetUUIdBYendPointKey(key)
             // v.uuid = uuid
             container.append(`<div class="node-item">
                 <div class="targetEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
@@ -140,10 +171,11 @@ class CustomNode extends Node {
         })
     }
 
+    // 数值类型 value字段（String,Array） 添加 属性节点
     _onAddNodeProps(container,data){
         if(Array.isArray(data.value)){
             data.value.forEach(v=>{
-                let uuid = getUUId()
+                let uuid = this._onGetUUIdBYendPointKey(v.prop)
                 v.uuid = uuid
                 container.append(`<div class="node-item">
                     <div class="targetEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
@@ -153,30 +185,38 @@ class CustomNode extends Node {
                 this.endpointList.push({uuid,type:"target",key:v.prop})
             })
         }else{
-            let uuid = getUUId()
+            let uuid = this._onGetUUIdBYendPointKey(data.content)
             data.uuid = uuid
             container.append(`<div class="node-item">
                 <div class="prop_content"> <div> ${data.content} : ${data.value} </div> </div>
                 <div class="sourceEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
             </div>`)
-            this.endpointList.push({uuid,type:"source",key:data.content})
+            let point = {uuid,type:"source",key:data.content}
+            this.endpointList.push(point)
+            this.bufferEndpointMap[data.content] = point
         }
         let nodeItem = container.find(".node-item")
         // console.log(nodeItem);
         this._onEditNodeProp(nodeItem)
     }
 
+    // 动态添加可编辑数据节点
     _onCreatePropsByDialog(container,data){
         let uuid = getUUId()
         // console.log("i evt",evt);
-        MessageBox.confirm(`<input class="message-input" id="${uuid}">`, '属性添加', {
+        MessageBox.prompt("请输入属性名称", '属性添加', {
             dangerouslyUseHTMLString:true,
             distinguishCancelAndClose: true,
-            confirmButtonText: '保存',
-            cancelButtonText: '放弃修改'
-        }).then(() => {
-            let prop =  document.getElementById(uuid).value
-            if(prop.trim()=="")return
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+        }).then(({value}) => {
+            let prop = value
+            if(!prop || prop.trim()=="")return Message.error("请勿添加空属性名称")
+            if(this.bufferEndpointMap.hasOwnProperty(prop)){
+                Message.error("请勿添加当前节点重复属性")
+                return 
+            }
+
             if(data.options.data.type=="Number"&&data.options.data.content=="MutNumber"){
                 data.options.data.value.push({prop,value:0})
             }else if(data.options.data.type=="Geometry"){
@@ -199,7 +239,9 @@ class CustomNode extends Node {
                 type:"target",
                 limitNum: 1
             })
-            this.endpointList.push({uuid,type:"target",key:prop})
+            let point = {uuid,type:"target",key:prop}
+            this.endpointList.push(point)
+            this.bufferEndpointMap[prop] = point
             this._onEmit("insetEndPoint")
 
             // 删除属性
@@ -220,6 +262,7 @@ class CustomNode extends Node {
         });
     }
 
+    // 可编辑数据节点
     _onEditNodeProp(dom){
         let data = this.data.options.data
         let values = this.data.options.data.value
@@ -251,15 +294,28 @@ class CustomNode extends Node {
        })
     }
 
-    _onEmit(text){
+    // 发送事件
+    _onEmit(text,data){
+        let upData = data || this
         let event = ["update","delete","insetEndPoint"]
         if(event.indexOf(text) ==-1) return 
-        this.emit("custom.node."+text,this,this.data)
+        this.emit("custom.node."+text,upData,this.data)
         // console.log("custom.node."+text,this)
     }
 
+    // 监听node事件
+    _onNodeOn(){
+        this.on("system.node.move",(data)=>{
+            if(data.nodes.length==1){
+                this._onEmit('update',data.nodes[0].data)
+            }
+        })
+    }
+
     mounted() {
+        let obj = {}
         this.endpointList.forEach(point=>{
+            // obj[point.key] = point
             this.addEndpoint({
                 id:point.uuid,
                 dom:document.getElementById(point.uuid),
@@ -267,18 +323,8 @@ class CustomNode extends Node {
                 limitNum: point.type == "target"  ? 1 : 10000 
             })
         })
+        this.bufferEndpointMap = obj
         this._onEmit("insetEndPoint")
-    }
-
-
-    markEvent(){
-        let events = ["click"]
-        events.forEach(event=>{
-            this.container.on(event,(evt)=>{
-                this.options.label = new Date().getTime().toString(16)
-                console.log(this.options);
-            })
-        })
     }
 }
 

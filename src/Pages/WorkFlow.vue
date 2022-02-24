@@ -26,10 +26,11 @@
       <WorkFlowOptions  :data="activeNode" @submit="optionsSubmit" />
     </div> -->
     <ExportCom :data="nodeList" />
+    <UtilCmp  @click="test" />
   </div>
 </template>
 <script>
-import { Canvas } from "butterfly-dag";
+import { Canvas,Edge } from "butterfly-dag";
 import Node from "./components/Node";
 import Endpoint from './components/Endpoint'
 import Menus from "./components/Menu";
@@ -37,10 +38,12 @@ import $ from "jquery";
 import { getUUId } from "@/utils/utils";
 import WorkFlowOptions from './components/workFLowOptions.vue'
 import ExportCom from './components/exportCom.vue'
+import UtilCmp from  './components/utilCmp.vue'
 export default {
   components: {
     WorkFlowOptions,
-    ExportCom
+    ExportCom,
+    UtilCmp
   },
   data() {
     return {
@@ -69,8 +72,56 @@ export default {
   created() {},
   mounted() {
     this.initCanvas();
+    this.initCanvasData()
+  },
+  updated() {
+    window.eStore.set("canvasData",JSON.stringify({
+      nodes: this.nodeList,
+      edges: this.edgeList,
+      groups: this.groupList,
+    }))
+    window.eStore.set("endpointMap",JSON.stringify(this.endpointMap))
+  },
+  beforeDestroy(){
+    // window.eStore.delete("canvasData")
+    // window.eStore.delete("endpointMap")
+    // window.eStore.set("canvasData",JSON.stringify({
+    //   nodes: this.nodeList,
+    //   edges: this.edgeList,
+    //   groups: this.groupList,
+    // }))
+    // window.eStore.set("endpointMap",JSON.stringify(this.endpointMap))
   },
   methods: {
+    test(){
+      // console.log(JSON.parse(window.eStore.get("endpointMap")))
+       this.redrawCanvas()
+    },
+    // electron-store 取值
+    initCanvasData(){
+      let canvasData = window.eStore.get("canvasData")
+      console.log(canvasData);
+      if(canvasData){
+        canvasData = JSON.parse(canvasData)
+        this.nodeList = canvasData.nodes
+        this.edgeList = canvasData.edges
+        this.groupList = canvasData.groups
+
+        this.nodeList = this.nodeList.map(node=>{
+          if(node.Class)return node
+          return {
+            ...node,
+            Class:Node
+          }
+        })
+        if(this.canvas){
+          this.canvas.addNodes(this.nodeList)
+          this.canvas.addEdges(this.edgeList)
+          // this.redrawCanvas()
+        }
+      }
+      
+    },
     // 初始化画布
     initCanvas() {
       const canvas = new Canvas({
@@ -109,11 +160,25 @@ export default {
     redrawCanvas(){
       if(this.isDraw) return
       this.isDraw = true
+     
+      this.nodeList = this.nodeList.map(node=>{
+        if(node.Class)return node
+        return {
+          ...node,
+          Class:Node
+        }
+      })
+      //  console.log(this.nodeList);
+      // console.log("-------------------------")
+      // console.log(JSON.stringify(this.edgeList));
       this.canvas.redraw({
         nodes: this.nodeList,
-        edges: this.edgeList,
+        // edges: this.edgeList,
         groups: this.groupList
-      },()=>this.isDraw = false)
+      },()=>{
+        this.canvas.addEdges(this.edgeList)
+        this.isDraw = false
+      })
     },
     // menu按下开启拖拽模式
     liOnmouseDown(pIndex,cIndex) {
@@ -226,7 +291,6 @@ export default {
             //   this.nodeClick(data)
             //   break;
             case "custom.node.update":
-              console.log(data);
               let index = this.nodeList.findIndex(node=>node.id == data.id)
               this.nodeList[index].label = data.options.label
               this.nodeList[index].data = data.options.data
@@ -268,7 +332,6 @@ export default {
       // let removeEdges = this.edgeList.filter(e=> (e.sourceNode == data.id || e.targetNode == data.id) )
       this.edgeList = this.edgeList.filter(e=> (e.sourceNode != data.id && e.targetNode != data.id) )
       delete this.endpointMap[data.id]
-      console.log(this.endpointMap);
       // console.log(removeEdges,this.edgeList,data.id);
       // this.removeEdges.forEach(edge=>{
 
@@ -284,7 +347,7 @@ export default {
       if(this.isDraw) return
       if(!data) return
       let {sourceNode,targetNode,sourceEndpoint,targetEndpoint} = data
-
+      let _this = this
       /**
        * 当几何运算组件接入时候
        * 数值组件及数值运算组件不能直接接入
@@ -292,6 +355,25 @@ export default {
       let flag
       if(targetNode.data.options.data.type === "Operation"){
         flag = ["Operation","Geometry"].includes(sourceNode.data.options.data.type)
+        
+        // console.log(sourceNode.data.options.data);
+        // console.log(targetNode.data.options.data);
+        // console.log(targetEndpoint);
+        let node = this.endpointMap[targetNode.data.id].find(n=>n.uuid==targetEndpoint.id)
+        let f = ["Number","NumberOperation"].includes(sourceNode.data.options.data.type)
+        if(node.key=="V"){
+          if(f){
+            addEdgeList()
+            // this.edgeList.push({
+            //   source: sourceEndpoint.id,
+            //   target: targetEndpoint.id,
+            //   sourceNode: sourceNode.id,
+            //   targetNode: targetNode.id,
+            //   type: 'endpoint'
+            // })
+            return
+          }
+        }
         if(!flag){
           this.$message.warning("请接入几何、几何运算组件")
           this.canvas.removeEdge(data.id)
@@ -369,13 +451,21 @@ export default {
       //   this.nodeList[index].data.args[prop] = data[prop+"Node"].id
       // }
       // 保存连接线
-      this.edgeList.push({
-        source: sourceEndpoint.id,
-        target: targetEndpoint.id,
-        sourceNode: sourceNode.id,
-        targetNode: targetNode.id,
-        type: 'endpoint'
-      })
+      addEdgeList()
+      function addEdgeList(){
+        let flag = _this.edgeList.some(edge=>{
+          return edge.source == sourceEndpoint.id && edge.target == targetEndpoint.id && edge.sourceNode == sourceNode.id && edge.targetNode == targetNode.id
+        })
+        if(flag) return // 避免相同数据重复添加
+        _this.edgeList.push({
+          source: sourceEndpoint.id,
+          target: targetEndpoint.id,
+          sourceNode: sourceNode.id,
+          targetNode: targetNode.id,
+          type: 'endpoint'
+        })
+      }
+
       // this.redrawCanvas()
     },
     linkDisconnect(data){

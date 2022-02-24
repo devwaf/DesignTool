@@ -15,6 +15,11 @@ function menuList(){
                   label:"可变数值",
                   content:"MutNumber",
                   value:[]
+              },
+              {
+                label:"参数",
+                content:"Parameter",
+                value:10
               }
             ]
           },
@@ -254,7 +259,31 @@ function menuList(){
                         A:null,
                     },
                     customArgs:[],
-                }
+                },
+                {
+                    label:"平移",
+                    content:"translation",
+                    args:{
+                        A:null,
+                        V:null
+                    }
+                },
+                {
+                    label:"旋转",
+                    content:"rotate",
+                    args:{
+                        A:null,
+                        V:null
+                    }
+                },
+                {
+                    label:"缩放",
+                    content:"scale",
+                    args:{
+                        A:null,
+                        V:null
+                    }
+                },
             ]
         },
         // {

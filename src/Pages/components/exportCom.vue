@@ -4,9 +4,9 @@
           <VueJsonViewer v-model="jsonData" :expand-depth="5" :expanded="true" />
       </div>
       <div class="operation-btns" v-show="isExpand">
-          <el-button size="small" @click.stop="copyJson"> 复 制 </el-button>
+          <!-- <el-button size="small" @click.stop="copyJson"> 复 制 </el-button>
           <el-button size="small" @click.stop="exportJson"> 导 出Json </el-button>
-          <el-button size="small" @click.stop="openRequest"> 请 求 </el-button>
+          <el-button size="small" @click.stop="openRequest"> 请 求 </el-button> -->
       </div>
       <i class="icon" :class="isExpand ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" @click.stop="expandContainer"></i>
       <el-dialog
@@ -31,7 +31,6 @@
 
 <script>
 import VueJsonViewer from 'vue-json-viewer'
-import { ipcRenderer} from 'electron';
 export default {
     components:{
         VueJsonViewer
@@ -79,40 +78,10 @@ export default {
         expandContainer(){
             this.isExpand = !this.isExpand
             if(this.isExpand){
-                let nodeList = this.setPropUuidByEdges()
-                let obj = {}
-                let data = {}
-                nodeList.forEach(node=>{
-                    data = {label:node.content,name:node.label,uuid:node.id}
-                    if(node.type==="Props"){
-                        Array.isArray(node.value) ? node.value.forEach(v=>data[v.prop]=v.value) : data.value = node.value
-                    }else if(node.type ==="Number"){
-                        if(node.content=="MutNumber"){
-                            data.args = node.value.map(v=>v.value)
-                        }else{
-                            data.value = node.value
-                        }
-                    }else if(node.type=="NumberOperation"){
-                        console.log(node);
-                        data.value = [node.args.A,node.args.B]
-                    }else{
-                        data = {...data,...node.args}
-                    }
-
-                    if(!obj.hasOwnProperty(node.type)){
-                        obj[node.type] = [data]
-                    }else{
-                        obj[node.type].push(data)
-                    }
-                })
-                // console.log(obj);
-                this.jsonData = {
-                    number: [].concat(obj.Number||[]).concat(obj.NumberOperation||[]),
-                    geometry:[].concat(obj.Geometry||[]).concat(obj.Operation||[]),
-                    parameter:obj.Props||[]
-                }
-                // this.setDataByEdges()
-                // this.setPropUuidByEdges()
+                // this.$store.commit("setPropUuidByEdges",this.$parent._data)
+               this.$store.commit("parseDataToJson",this.$parent._data)
+               this.jsonData = this.$store.state.exportJson
+                // let nodeList = this.setPropUuidByEdges()
             }else{
                 this.jsonData = {}
             }
@@ -218,40 +187,9 @@ export default {
 
         },
 
-        setPropUuidByEdges(){
-            const nodeMap = {}
-            JSON.parse(JSON.stringify(this.$parent._data.nodeList)).forEach(node=>{
-                nodeMap[node.id] = node.data
-                // 更新最新的label值
-                nodeMap[node.id].label = node.label
-            })
-            const edgeList = this.$parent._data.edgeList
-            let endpointMap = this.$parent._data.endpointMap
-            // sourceNode,targetNode,   source 开始端点id   ,target 结束端点id
-            edgeList.forEach(({sourceNode,targetNode,source,target})=>{
-                let targetNodeEndpoints = endpointMap[targetNode]
-                let index = targetNodeEndpoints.findIndex(f=>f.uuid == target)
-                let props = targetNodeEndpoints[index]
-                
-                switch (nodeMap[targetNode].type) {
-                    case "NumberOperation":
-                        nodeMap[targetNode].args[props.key] = sourceNode
-                    case "Geometry":
-                        nodeMap[targetNode].args[props.key] = sourceNode
-                    case "Operation":
-                        nodeMap[targetNode].args[props.key] = sourceNode
-                        break;
-                    case "Number":
-                        index = nodeMap[targetNode].value.findIndex(v=>v.prop==props.key)
-                        nodeMap[targetNode].value[index].value = sourceNode
-                        break;
-                    default:
-                        break;
-                }
-            })
-            return Object.values(nodeMap)
-        },
-
+        // setPropUuidByEdges(){
+        //     this.$store.commit("setPropUuidByEdges",this.$parent._data)
+        // },
 
         setJson(){
             let json = {
@@ -284,8 +222,7 @@ export default {
             // console.log(file);
         },
         openRequest(){
-            console.log("测试发送");
-            ipcRenderer.send("window-test")
+            window.ipcRenderer.send("window-test",JSON.stringify(this.jsonData))
         }
     },
 }

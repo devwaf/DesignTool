@@ -6,6 +6,83 @@
   "description": "bimBase  python 工具",
   "glyphs": [
     {
+      "icon_id": "7050563",
+      "name": "数据建模",
+      "font_class": "shujujianmo",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "22376328",
+      "name": "导入SimpleJSON文件夹",
+      "font_class": "daoruSimpleJSONwenjianjia",
+      "unicode": "eda0",
+      "unicode_decimal": 60832
+    },
+    {
+      "icon_id": "27736601",
+      "name": "圆弧2",
+      "font_class": "yuanhu2",
+      "unicode": "e73b",
+      "unicode_decimal": 59195
+    },
+    {
+      "icon_id": "27736602",
+      "name": "圆弧1",
+      "font_class": "yuanhu1",
+      "unicode": "e73c",
+      "unicode_decimal": 59196
+    },
+    {
+      "icon_id": "27736626",
+      "name": "cube",
+      "font_class": "cube",
+      "unicode": "e73d",
+      "unicode_decimal": 59197
+    },
+    {
+      "icon_id": "27736627",
+      "name": "section",
+      "font_class": "section",
+      "unicode": "e73e",
+      "unicode_decimal": 59198
+    },
+    {
+      "icon_id": "27736649",
+      "name": "二维线段",
+      "font_class": "erweixianduan",
+      "unicode": "e73f",
+      "unicode_decimal": 59199
+    },
+    {
+      "icon_id": "27736671",
+      "name": "三维线段",
+      "font_class": "sanweixianduan",
+      "unicode": "e740",
+      "unicode_decimal": 59200
+    },
+    {
+      "icon_id": "27736725",
+      "name": "并集",
+      "font_class": "bingji",
+      "unicode": "e741",
+      "unicode_decimal": 59201
+    },
+    {
+      "icon_id": "27736726",
+      "name": "交集",
+      "font_class": "jiaoji",
+      "unicode": "e742",
+      "unicode_decimal": 59202
+    },
+    {
+      "icon_id": "27736727",
+      "name": "差集",
+      "font_class": "chaji",
+      "unicode": "e743",
+      "unicode_decimal": 59203
+    },
+    {
       "icon_id": "27680806",
       "name": "属性",
       "font_class": "shuxing",

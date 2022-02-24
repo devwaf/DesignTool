@@ -2,6 +2,6 @@ import sys
 
 
 def run(args):
-    print("test node run python args:" + args)
+    print("test node run python args:"+args)
 
-run(sys.argv[1])
+run("11")

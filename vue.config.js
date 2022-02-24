@@ -4,7 +4,7 @@ module.exports = {
     devServer:{
         port:22001,
         hot:true,
-        open:true
+        open:false
     },
     css: {
         extract: IS_PROD,
@@ -23,6 +23,11 @@ module.exports = {
     pluginOptions:{
         electronBuilder:{
             preload: 'src/preload.js',
+            builderOptions:{
+                asar: false,
+            }
+            
+            // nodeIntegration: true
         }
     }
 
