@@ -15,17 +15,20 @@ export default {
             this.$emit('click')
         },
         downloadJson(){
+            this.$store.commit("parseDataToJson",this.$parent._data)
             let json = JSON.stringify(this.$store.state.exportJson)
             let file = new File([json],"test.json",{type:"application/json"})
             // let bolb = new Blob(file,"application/json")
             let url = URL.createObjectURL(file)
             let a = document.createElement("a")
             a.href=url
-            a.download=(new Date().getTime()) + ".json"
+            a.download=(new Date().getTime()) + ".bim"
             a.click()
         },
         requestBIM(){
-            window.ipcRenderer.send("window-test",JSON.stringify(this.jsonData))
+            this.$store.commit("parseDataToJson",this.$parent._data)
+            let json = JSON.stringify(this.$store.state.exportJson)
+            window.ipcRenderer.send("window-test",json)
         }
     }
 }

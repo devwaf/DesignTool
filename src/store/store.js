@@ -60,8 +60,8 @@ const mutations = {
         edgeList.forEach(({sourceNode,targetNode,source,target})=>{
             let targetNodeEndpoints = endpointMap[targetNode]
             let index = targetNodeEndpoints.findIndex(f=>f.uuid == target)
+            if(index==-1) return
             let props = targetNodeEndpoints[index]
-            
             switch (nodeMap[targetNode].type) {
                 case "NumberOperation":
                     nodeMap[targetNode].args[props.key] = sourceNode

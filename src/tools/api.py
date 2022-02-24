@@ -4,4 +4,4 @@ import sys
 def run(args):
     print("test node run python args:"+args)
 
-run("11")
+run(sys.argv[0])
