@@ -51,7 +51,7 @@ async function createWindow() {
 
 
 ipcMain.on("window-test",function(_,data){
-  console.log(data,"ssss");
+  // console.log(data,"ssss");
   execPython(data)
 })
 
