@@ -23,7 +23,7 @@ const mutations = {
                 Array.isArray(node.value) ? node.value.forEach(v=>data[v.prop]=v.value) : data.value = node.value
             }else if(node.type ==="Number"){
                 if(node.content=="MutNumber"){
-                    data.args = node.value.map(v=>v.value)
+                    data.value = node.value.map(v=>v.value)
                 }else{
                     data.value = node.value
                 }

@@ -3,7 +3,7 @@ import io
 
 def run(args):
 
-    f = open('./1.json',"w")
+    f = open('./temp.json',"w",encoding="utf-8")
     f.write(args)
     f.close()
     print("test node run python args:" + args)

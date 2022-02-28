@@ -20,6 +20,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 1960,
     height: 1080,
+    show:false,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -31,6 +32,9 @@ async function createWindow() {
     },
     // titleBarStyle:"hidden",
     titleBarOverlay: true
+  })
+  win.once("ready-to-show",()=>{
+    win.show()
   })
 
 

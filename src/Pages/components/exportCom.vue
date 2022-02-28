@@ -150,7 +150,7 @@ export default {
 
             // 数值运算组件
             numberOperationList.forEach(no=>{
-                console.log(no);
+                // console.log(no);
                 edgeList = edges.filter(e=> no.id == e.sourceNode)
                 edgeList.forEach(edge=>{
                     index = nodeList.findIndex(node=>node.id==edge.targetNode)
@@ -159,7 +159,7 @@ export default {
                         // console.log(node);
                         index = nodeEndpointMap[edge.targetNode].findIndex(f=>f.uuid == edge.target)
                         let key = nodeEndpointMap[edge.targetNode][index].key
-                         console.log(`${no.args.A}${no.alge}${no.args.B}`);
+                        //  console.log(`${no.args.A}${no.alge}${no.args.B}`);
                         let result = eval(`${no.args.A}${no.alge}${no.args.B}`)
                        
                         // if(Array.isArray(p.value)){
@@ -167,7 +167,7 @@ export default {
                         // }else{
                         //     obj = p.value
                         // }
-                        console.log(result);
+                        // console.log(result);
 
                         if(node.data.args)node.data.args[key] = result
                         if(node.data.value){

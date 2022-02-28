@@ -12,9 +12,13 @@ function menuList(){
                   value:10
               },
               {
-                  label:"可变数值",
+                  label:"多数值",
                   content:"MutNumber",
-                  value:[]
+                  value:[
+                      {prop:"A",value:0},
+                      {prop:"B",value:0},
+                      {prop:"C",value:0}
+                  ]
               },
               {
                 label:"参数",
@@ -89,21 +93,6 @@ function menuList(){
                         p2:{x:0,y:0,z:0},
                         p3:{x:0,y:0,z:0},
                         color:'rgba(19, 206, 102, 0.8)',
-                        translate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        rotate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        scale:{
-                            x:1,
-                            y:1,
-                            z:1
-                        }
                     },
                     customArgs:[],
                 },
@@ -112,21 +101,6 @@ function menuList(){
                     content:"Cube",
                     args:{
                         color:'rgba(255, 255, 255, 0.8)',
-                        translate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        rotate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        scale:{
-                            x:1,
-                            y:1,
-                            z:1
-                        }
                     },
                     customArgs:[],
                 },
@@ -137,21 +111,6 @@ function menuList(){
                         p1:{x:0,y:0,z:0},
                         p2:{x:0,y:0,z:0},
                         color:'rgba(255, 255, 255, 0.8)',
-                        translate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        rotate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        scale:{
-                            x:1,
-                            y:1,
-                            z:1
-                        }
                     },
                     customArgs:[],
                 },
@@ -163,21 +122,6 @@ function menuList(){
                         p2:{x:0,y:0,z:0},
                         p3:{x:0,y:0,z:0},
                         color:'rgba(255, 255, 255, 0.8)',
-                        translate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        rotate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        scale:{
-                            x:1,
-                            y:1,
-                            z:1
-                        }
                     },
                     customArgs:[],
                     
@@ -187,21 +131,6 @@ function menuList(){
                     content:"Section",
                     args:{
                         color:'rgba(255, 255, 255, 0.8)',
-                        translate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        rotate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        scale:{
-                            x:1,
-                            y:1,
-                            z:1
-                        }
                     },
                     customArgs:[],
                 }

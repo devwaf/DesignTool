@@ -58,7 +58,7 @@ class CustomNode extends Node {
         }
         else{
             // 添加数值组件、属性组件面板  面板可编辑属性
-            this._onAddNodeProps(container,data.options.data)
+            this._onAddNodeProps(container,data.options.data,data)
         }
         
         // if(data.options.content&&data.options.content.length>0){
@@ -172,15 +172,17 @@ class CustomNode extends Node {
     }
 
     // 数值类型 value字段（String,Array） 添加 属性节点
-    _onAddNodeProps(container,data){
+    _onAddNodeProps(container,data,globalData){
         if(Array.isArray(data.value)){
             data.value.forEach(v=>{
                 let uuid = this._onGetUUIdBYendPointKey(v.prop)
                 v.uuid = uuid
-                container.append(`<div class="node-item">
+                let nodeItem = $(`<div class="node-item">
                     <div class="targetEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
-                    <div class="prop_content"> <div> ${v.prop} </div> </div>
+                    <div class="prop_content"> <div style="display:flex;align-items: center;"> <span style="flex:1;">${v.prop}</span> <i class="el-icon-close icon-class"></i>  </div> </div>
                 </div>`)
+                container.append(nodeItem)
+                this._onDeleteProp(nodeItem,globalData,uuid)
                 // <div class="prop_content"> <div> ${v.prop} : ${v.value} </div> </div>
                 this.endpointList.push({uuid,type:"target",key:v.prop})
             })
@@ -202,7 +204,6 @@ class CustomNode extends Node {
 
     // 动态添加可编辑数据节点
     _onCreatePropsByDialog(container,data){
-        let uuid = getUUId()
         // console.log("i evt",evt);
         MessageBox.prompt("请输入属性名称", '属性添加', {
             dangerouslyUseHTMLString:true,
@@ -226,7 +227,7 @@ class CustomNode extends Node {
             this._onEmit("update")
 
             
-
+            let uuid = getUUId()
             let nodeItem = $(`<div class="node-item">
                 <div class="targetEndPoint butterflie-circle-endpoint" id="${uuid}"></div>
                 <div class="prop_content"> <div style="display:flex;align-items: center;"> <span style="flex:1;">${prop}</span> <i class="el-icon-close icon-class"></i>  </div> </div>
@@ -243,23 +244,39 @@ class CustomNode extends Node {
             this.endpointList.push(point)
             this.bufferEndpointMap[prop] = point
             this._onEmit("insetEndPoint")
-
+            this._onDeleteProp(nodeItem,data,uuid)
             // 删除属性
-            nodeItem.find(".icon-class").on("click",(evt)=>{
-                if(data.options.data.type=="Number"&&data.options.data.content=="MutNumber"){
-                    data.options.data.value.splice(nodeItem.index()-1)
-                }else if(data.options.data.type=="Geometry"){
-                    data.options.data.customArgs.splice(nodeItem.index()-1)
-                }
-                nodeItem.remove()
-                this.endpointList = this.endpointList.filter(e=>e.uuid!=uuid)
-                this._onEmit("update")
-                this._onEmit("insetEndPoint")
-            })
+            // nodeItem.find(".icon-class").on("click",(evt)=>{
+            //     if(data.options.data.type=="Number"&&data.options.data.content=="MutNumber"){
+            //         data.options.data.value.splice(nodeItem.index()-1)
+            //     }else if(data.options.data.type=="Geometry"){
+            //         data.options.data.customArgs.splice(nodeItem.index()-1)
+            //     }
+            //     nodeItem.remove()
+            //     this.endpointList = this.endpointList.filter(e=>e.uuid!=uuid)
+            //     this._onEmit("update")
+            //     this._onEmit("insetEndPoint")
+            // })
         })
         .catch(action => {
             console.log("取消"+action);
         });
+    }
+
+    _onDeleteProp(nodeItem,data,uuid){
+        nodeItem.find(".icon-class").on("click",(evt)=>{
+            if(data.options.data.type=="Number"&&data.options.data.content=="MutNumber"){
+                // console.log(data.options.data.value, nodeItem.index()-1);
+                data.options.data.value.splice(nodeItem.index()-2,1)
+            }else if(data.options.data.type=="Geometry"){
+                data.options.data.customArgs.splice(nodeItem.index()-1)
+            }
+            nodeItem.remove()
+            console.log(data);
+            this.endpointList = this.endpointList.filter(e=>e.uuid!=uuid)
+            this._onEmit("update")
+            this._onEmit("insetEndPoint")
+        })
     }
 
     // 可编辑数据节点
