@@ -32,26 +32,26 @@ function menuList(){
               type:"NumberOperation",
               children:[
                   {
-                      label:"add",
+                      label:"加法",
                       content:"Add",
                       args:{A:0,B:0},
                       alge:"+"
                   },
                   {
-                      label:"sub",
+                      label:"减法",
                       content:"Sub",
                       args:{A:0,B:0},
                       alge:"-"
                   },
                   {
-                      label:"mul",
+                      label:"乘法",
                       content:"Mul",
                       args:{A:0,B:0},
                       alge:"*"
                   },
                   {
-                      label:"divide",
-                      content:"Add",
+                      label:"除法",
+                      content:"Div",
                       args:{A:0,B:0},
                       alge:"/"
                   }
@@ -67,21 +67,6 @@ function menuList(){
                     args:{
                         degree:0,
                         color:'rgba(255, 255, 255, 0.8)',
-                        translate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        rotate:{
-                            x:0,
-                            y:0,
-                            z:0
-                        },
-                        scale:{
-                            x:1,
-                            y:1,
-                            z:1
-                        }
                     },
                     customArgs:[],
                 },
@@ -191,7 +176,7 @@ function menuList(){
                 },
                 {
                     label:"平移",
-                    content:"translation",
+                    content:"Translation",
                     args:{
                         A:null,
                         V:null
@@ -199,7 +184,7 @@ function menuList(){
                 },
                 {
                     label:"旋转",
-                    content:"rotate",
+                    content:"Rotate",
                     args:{
                         A:null,
                         V:null
@@ -207,7 +192,7 @@ function menuList(){
                 },
                 {
                     label:"缩放",
-                    content:"scale",
+                    content:"Scale",
                     args:{
                         A:null,
                         V:null

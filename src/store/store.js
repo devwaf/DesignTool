@@ -30,6 +30,10 @@ const mutations = {
             }else if(node.type=="NumberOperation"){
                 console.log(node);
                 data.value = [node.args.A,node.args.B]
+            }else if(node.type=="Operation"){
+                data = {...data}
+                data.value = [node.args.A,node.args.V || node.args.B]
+                if( data.args)delete data.args
             }else{
                 data = {...data,...node.args}
             }

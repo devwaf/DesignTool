@@ -1,6 +1,6 @@
 <template>
     <div class="util-cmp-container">
-        <el-button type="primary" circle @click="test" class="el-icon-refresh"></el-button>
+        <!-- <el-button type="primary" circle @click="test" class="el-icon-refresh"></el-button> -->
         <el-button type="primary" circle @click="setPythonPath" class="el-icon-setting"></el-button>
         <el-button type="success" class="iconfont icon-shujujianmo" circle round @click="requestBIM"></el-button>
         <el-button type="primary" class="iconfont icon-daoruSimpleJSONwenjianjia" circle round @click="downloadJson"></el-button>
@@ -48,7 +48,7 @@ export default {
         },
         requestBIM(){
             this.$store.commit("parseDataToJson",this.$parent._data)
-            let json = JSON.stringify(this.$store.state.exportJson)
+            let json = JSON.stringify({...this.$store.state.exportJson,path:this.pyPath})
             window.ipcRenderer.send("window-test",json)
         },
         // 
