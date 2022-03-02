@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow,ipcMain } from 'electron'
+import { app, protocol, BrowserWindow,ipcMain,ipcRenderer } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const path = require("path")
 // import {createPyProc,exitPyProc} from './tools/main'
@@ -36,6 +36,9 @@ async function createWindow() {
   win.once("ready-to-show",()=>{
     win.show()
   })
+  win.on("close",()=>{
+    win.webContents.send("close")
+  })
 
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -59,9 +62,6 @@ ipcMain.on("window-test",function(_,data){
   execPython(data)
 })
 
-
-
-
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -70,6 +70,7 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the

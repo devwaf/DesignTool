@@ -15,7 +15,7 @@ class CustomNode extends Node {
     // 数据初始化
     init(data){
         let endpointMap =  window.eStore.get("endpointMap")
-        console.log(endpointMap);
+        // console.log(endpointMap,"endpointMap");
         if(!endpointMap) return 
         endpointMap = JSON.parse(endpointMap)
         let endpoints = endpointMap[data.id]
@@ -26,6 +26,7 @@ class CustomNode extends Node {
             obj[point.key] = point
         })
         this.bufferEndpointMap = obj
+        console.log(data.id,data.options.data.label,data.options.data.type,obj);
     }
 
     draw(data) {

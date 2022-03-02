@@ -72,19 +72,9 @@ export default {
   created() {},
   mounted() {
     this.initCanvas();
-    this.initCanvasData()
+    this.listenerIpcMain()
   },
   updated() {
-    window.eStore.set("canvasData",JSON.stringify({
-      nodes: this.nodeList,
-      edges: this.edgeList,
-      groups: this.groupList,
-    }))
-    window.eStore.set("endpointMap",JSON.stringify(this.endpointMap))
-  },
-  beforeDestroy(){
-    // window.eStore.delete("canvasData")
-    // window.eStore.delete("endpointMap")
     // window.eStore.set("canvasData",JSON.stringify({
     //   nodes: this.nodeList,
     //   edges: this.edgeList,
@@ -97,10 +87,25 @@ export default {
       // console.log(JSON.parse(window.eStore.get("endpointMap")))
        this.redrawCanvas()
     },
+    // 监听主程序关闭时候存储数据
+    listenerIpcMain(){
+      if(window.ipcRenderer){
+        console.log(ipcRenderer);
+        ipcRenderer.on("close",()=>{
+          console.log(11);
+          window.eStore.set("canvasData",JSON.stringify({
+            nodes: this.nodeList,
+            edges: this.edgeList,
+            groups: this.groupList,
+          }))
+          window.eStore.set("endpointMap",JSON.stringify(this.endpointMap))
+        })
+      }
+    },
     // electron-store 取值
     initCanvasData(){
       let canvasData = window.eStore.get("canvasData")
-      console.log(canvasData);
+      // console.log(canvasData);
       if(canvasData){
         canvasData = JSON.parse(canvasData)
         this.nodeList = canvasData.nodes
@@ -138,10 +143,11 @@ export default {
         }
       });
       canvas.draw({
-        nodes: this.nodeList,
-        edges: this.edgeList,
-        groups: this.groupList,
+        // nodes: this.nodeList,
+        // edges: this.edgeList,
+        // groups: this.groupList,
       },()=>{
+        this.initCanvasData()
         // canvas.setGridMode(true, {
         //   isAdsorb: false,         // 是否自动吸附,默认关闭
         //   theme: {
@@ -170,12 +176,12 @@ export default {
       })
       //  console.log(this.nodeList);
       // console.log("-------------------------")
-      // console.log(JSON.stringify(this.edgeList));
       this.canvas.redraw({
         nodes: this.nodeList,
         // edges: this.edgeList,
         groups: this.groupList
       },()=>{
+        console.log(this.edgeList);
         this.canvas.addEdges(this.edgeList)
         this.isDraw = false
       })

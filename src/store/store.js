@@ -16,7 +16,6 @@ const mutations = {
         let jsonData = {}
         this.commit("setPropUuidByEdges",_data)
         let nodeList = state.nodeList
-        console.log(nodeList);
         nodeList.forEach(node=>{
             data = {label:node.content,name:node.label,uuid:node.id}
             if(node.type==="Props"){
