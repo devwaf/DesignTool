@@ -1,34 +1,88 @@
-# work_flow
+# DesignTool
 
-## Project setup
-```
+> 一个基于 Electron + Vue 的可视化工具，支持图形化编写和导出，特别适合几何计算和数学运算。
+
+## ✨ 功能特性
+
+- 🧩 **可视化编程** - 通过拖拽组件构建计算流程
+- 🧮 **Python 代码生成** - 自动将图形化流程转换为 json 格式
+- 📐 **几何计算支持** - 内置几何体和数值运算组件
+- 🎨 **直观界面** - 拖拽式组件连接，所见即所得
+
+## 📦 安装方法
+
+### 环境要求
+
+- Node.js >= 12.x（推荐 Node.js 14.x 或更高版本）
+- npm 或 yarn
+### 1. 克隆项目
+git clone https://github.com/devwaf/DesignTool.git
+cd DesignTool
+
+### 2. 安装依赖
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
+### 3. 启动开发服务
 npm run serve
+
+## 📷 截图预览
+
+| 界面 |
+|:---:|
+| ![界面截图](docs/screenshots/home.png) |
+
+## 🛠️ 技术栈
+
+| 类别 | 技术 |
+|:---|:---|
+| 前端框架 | Vue 2.6.11 |
+| UI 组件库 | Element-UI 2.15.6 |
+| 状态管理 | Vuex 3.5.1 |
+| 路由管理 | Vue Router 3.5.3 |
+| 打包工具 | Electron 16.0.7 |
+| 构建工具 | Vue CLI 4.5.0 |
+
+## 📁 项目结构
+
+```
+DesignTool/
+├── public/              # 静态资源
+├── src/                 # 源代码
+│   ├── main.js          # 应用入口
+│   ├── App.vue          # 根组件
+│   └── ...
+├── package.json         # 项目配置
+├── vue.config.js        # Vue CLI 配置
+└── babel.config.js      # Babel 配置
 ```
 
-### 运行桌面程序
-```
-electron:serve
-```
+## 🚀 常用命令
 
-### Compiles and minifies for production
-```
-npm run build
-```
+| 命令 | 说明 |
+|:---|:---|
+| `npm run serve` | 启动开发服务器（支持热重载） |
+| `npm run build` | 构建生产版本 |
+| `npm run lint` | 代码检查与修复 |
+| `npm run electron:serve` | 以 Electron 模式启动开发 |
+| `npm run electron:build` | 构建 Electron 桌面应用 |
 
-### 运行桌面程序打包  node 12.x 请修改 node_modules require("fs/promises"); 替换为 require("fs").promiss;
-```
-electron:serve
-```
+## 🤝 贡献指南
 
-### Lints and fixes files
-```
-npm run lint
-```
+1. Fork 本仓库
+2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的改动 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 提交 Pull Request
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 📄 许可证
+
+本项目基于 MIT License 开源，详情请参阅 [LICENSE](LICENSE) 文件。
+
+## 📧 联系方式
+
+- 作者：devwaf
+- 项目地址：https://github.com/devwaf/DesignTool
+
+---
+
+*如果这个项目对你有帮助，欢迎 Star ⭐ 支持！*
